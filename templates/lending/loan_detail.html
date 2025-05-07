@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ loan.title }} - Loan Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'lending:marketplace' %}">Marketplace</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Loan Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ loan.title }}</h1>
+        <h5 class="text-muted">{{ loan.get_status_display }}</h5>
+        <div class="mt-4">
+            <p>{{ loan.description }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Loan Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ loan.funding_percentage|floatformat:0 }}%
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <small>${{ loan.current_funded_amount }} raised</small>
+                        <small>${{ loan.amount }} goal</small>
+                    </div>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Loan Amount:</span>
+                        <strong>${{ loan.amount }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Interest Rate:</span>
+                        <strong>{{ loan.interest_rate }}%</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Term:</span>
+                        <strong>{{ loan.term_months }} months</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Monthly Payment:</span>
+                        <strong>${{ loan.monthly_payment }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total Repayment:</span>
+                        <strong>${{ loan.total_repayment }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Risk Score:</span>
+                        <strong>{{ loan.risk_score }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Created:</span>
+                        <strong>{{ loan.created_at|date:"M d, Y" }}</strong>
+                    </li>
+                </ul>
+                
+                <div class="mt-3">
+                    {% if user.is_authenticated %}
+                        {% if user.profile.user_type == 'investor' and loan.status == 'pending' %}
+                            <a href="{% url 'lending:invest' loan.id %}" class="btn btn-success w-100">Invest in this Loan</a>
+                        {% elif user.profile.user_type == 'borrower' and loan.borrower == user and loan.status in 'active,funded' %}
+                            <a href="{% url 'lending:repay' loan.id %}" class="btn btn-primary w-100">Make a Payment</a>
+                        {% elif user.profile.user_type == 'borrower' and loan.borrower == user %}
+                            <span class="badge bg-secondary d-block p-2">This is your loan</span>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:register_investor' %}" class="btn btn-outline-primary w-100">Register to Invest</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if loan.status in 'active,funded,repaid' %}
+<!-- Payment Schedule -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Repayment Schedule</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Payment #</th>
+                                <th>Due Date</th>
+                                <th>Amount Due</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payment_schedule %}
+                                <tr>
+                                    <td>{{ payment.payment_number }}</td>
+                                    <td>{{ payment.due_date|date:"M d, Y" }}</td>
+                                    <td>${{ payment.amount_due }}</td>
+                                    <td>${{ payment.principal }}</td>
+                                    <td>${{ payment.interest }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if payment.status == 'paid' %}bg-success
+                                            {% elif payment.status == 'late' %}bg-danger
+                                            {% elif payment.status == 'pending' %}bg-warning
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ payment.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if payment.payment_date %}
+                                            {{ payment.payment_date|date:"M d, Y" }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Investors -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Investors</h3>
+            </div>
+            <div class="card-body">
+                {% if investments %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Investor</th>
+                                    <th>Amount</th>
+                                    <th>Investment Percentage</th>
+                                    <th>Date Invested</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for investment in investments %}
+                                    <tr>
+                                        <td>{{ investment.investor.username }}</td>
+                                        <td>${{ investment.amount }}</td>
+                                        <td>{{ investment.investment_percentage|floatformat:2 }}%</td>
+                                        <td>{{ investment.date_invested|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center my-3">No investments have been made yet.</p>
+                    {% if user.is_authenticated and user.profile.user_type == 'investor' and loan.status == 'pending' %}
+                        <div class="text-center">
+                            <a href="{% url 'lending:invest' loan.id %}" class="btn btn-primary">Be the First to Invest!</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

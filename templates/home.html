@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}P2P Lending Platform - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center mb-5">
+        <h1 class="display-4">Welcome to P2P Lending</h1>
+        <p class="lead">Connect borrowers with investors through a secure platform</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title">For Borrowers</h2>
+                <p class="card-text">Need funds for your business or personal projects? Our platform connects you with investors willing to fund your ideas.</p>
+                <ul>
+                    <li>Competitive interest rates based on your profile</li>
+                    <li>Fast funding process</li>
+                    <li>Transparent repayment terms</li>
+                    <li>No hidden fees</li>
+                </ul>
+                <a href="{% url 'accounts:register_borrower' %}" class="btn btn-primary">Register as Borrower</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="card-title">For Investors</h2>
+                <p class="card-text">Looking to diversify your portfolio? Invest directly in loans to individuals and small businesses.</p>
+                <ul>
+                    <li>Higher returns than traditional investments</li>
+                    <li>Choose your risk level</li>
+                    <li>Invest as little as $10 per loan</li>
+                    <li>Transparent fee structure</li>
+                </ul>
+                <a href="{% url 'accounts:register_investor' %}" class="btn btn-primary">Register as Investor</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card text-center bg-light">
+            <div class="card-body">
+                <h3>How It Works</h3>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <h4>1. Register</h4>
+                            <p>Create an account as a borrower or investor</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <h4>2. Get Started</h4>
+                            <p>Request a loan or browse loan marketplace</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3">
+                            <h4>3. Transact</h4>
+                            <p>Fund loans or make repayments securely</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'lending:marketplace' %}" class="btn btn-outline-primary">Browse Marketplace</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Loan Request - P2P Lending{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard:borrower' %}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Create Loan Request</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2>Create a Loan Request</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            {{ form.title|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.amount|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.term_months|as_crispy_field }}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            {{ form.purpose|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h5>How it works:</h5>
+                        <p>After submission, your loan request will be processed with our risk assessment model to determine interest rates. Once approved, it will be listed on the marketplace for investors to fund.</p>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button class="btn btn-primary" type="submit">Submit Loan Request</button>
+                        <a href="{% url 'dashboard:borrower' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

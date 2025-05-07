@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Invest in Loan - P2P Lending{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'lending:marketplace' %}">Marketplace</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'lending:loan_detail' loan.id %}">{{ loan.title }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Invest</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2>Invest in Loan: {{ loan.title }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Loan Details:</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Amount:</span>
+                                <strong>${{ loan.amount }}</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Interest Rate:</span>
+                                <strong>{{ loan.interest_rate }}%</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Term:</span>
+                                <strong>{{ loan.term_months }} months</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Risk Score:</span>
+                                <strong>{{ loan.risk_score }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Your Details:</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Available Balance:</span>
+                                <strong>${{ investor_balance }}</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Already Funded:</span>
+                                <strong>${{ loan.current_funded_amount }}</strong>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Remaining Amount:</span>
+                                <strong>${{ loan.amount|floatformat:2|default:"0.00" }} - ${{ loan.current_funded_amount|floatformat:2|default:"0.00" }} = ${{ loan.amount|floatformat:2|default:"0.00"|add:"-"|add:loan.current_funded_amount|floatformat:2|default:"0.00" }}</strong>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ loan.funding_percentage|floatformat:0 }}%
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        {{ form|crispy }}
+                    </fieldset>
+                    
+                    <div class="alert alert-info">
+                        <h5>Investment Information:</h5>
+                        <p>
+                            <strong>Platform Fee:</strong> 2% of returns<br>
+                            <strong>Payment Distribution:</strong> When borrower makes payments, you'll receive your share proportional to your investment percentage.<br>
+                            <strong>Risk:</strong> All investments carry risk. There's no guarantee the borrower will repay the loan.
+                        </p>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button class="btn btn-success" type="submit">Confirm Investment</button>
+                        <a href="{% url 'lending:loan_detail' loan.id %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

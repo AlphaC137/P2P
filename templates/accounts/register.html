@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - P2P Lending{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ title }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Account Information</legend>
+                        {{ user_form|crispy }}
+                    </fieldset>
+                    <fieldset class="form-group mt-4">
+                        <legend class="border-bottom mb-4">Profile Information</legend>
+                        {{ profile_form|crispy }}
+                    </fieldset>
+                    <div class="form-group mt-4">
+                        <button class="btn btn-primary" type="submit">Register</button>
+                    </div>
+                </form>
+                <div class="border-top pt-3 mt-4">
+                    <small class="text-muted">
+                        Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
