@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load currency_format %}
 
 {% block title %}Deposit Funds - P2P Lending{% endblock %}
 
@@ -23,7 +24,7 @@
             </div>
             <div class="card-body">
                 <div class="mb-4">
-                    <h5>Current Balance: R{{ user.wallet.balance }}</h5>
+                    <h5>Current Balance: {{ user.wallet.balance|currency }}</h5>
                 </div>
                 
                 <form method="POST">

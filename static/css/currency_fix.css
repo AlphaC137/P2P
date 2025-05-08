@@ -1,0 +1,6 @@
+/* Add consistent currency icons */
+.input-group-text i.fas.fa-dollar-sign::before {
+  content: "R";
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+}

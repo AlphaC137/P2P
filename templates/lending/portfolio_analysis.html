@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_format %}
 
 {% block title %}Portfolio Analysis - P2P Lending{% endblock %}
 
@@ -31,7 +32,7 @@
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Total Invested</h5>
-                <h2 class="card-text text-primary">R{{ portfolio.total_invested }}</h2>
+                <h2 class="card-text text-primary">{{ portfolio.total_invested|currency }}</h2>
                 <p class="text-muted">Across {{ portfolio.loan_count }} loans</p>
             </div>
         </div>
@@ -40,8 +41,8 @@
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">Total Earnings</h5>
-                <h2 class="card-text text-success">R{{ portfolio.total_earnings }}</h2>
-                <p class="text-muted">Expected: R{{ portfolio.expected_earnings }} more</p>
+                <h2 class="card-text text-success">{{ portfolio.total_earnings|currency }}</h2>
+                <p class="text-muted">Expected: {{ portfolio.expected_earnings|currency }} more</p>
             </div>
         </div>
     </div>

@@ -19,6 +19,14 @@ class UserProfile(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s profile"
+    
+    @property
+    def available_balance(self):
+        """Get the user's wallet balance"""
+        try:
+            return self.user.wallet.balance
+        except:
+            return 0
 
 class InvestorProfile(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='investor_profile')
@@ -163,7 +171,7 @@ class Transaction(models.Model):
         return None
     
     def __str__(self):
-        return f"{self.wallet.user.username} - {self.get_transaction_type_display()} - ${self.amount}"
+        return f"{self.wallet.user.username} - {self.get_transaction_type_display()} - R{self.amount}"
 
 # Signal to create profiles and wallet automatically
 @receiver(post_save, sender=User)

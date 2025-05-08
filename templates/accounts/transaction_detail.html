@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Transaction Details - P2P Lending{% endblock %}
 
@@ -39,12 +40,12 @@
                     <div class="col-md-6">
                         <h5 class="text-muted">Amount</h5>
                         <p class="lead {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}text-success{% else %}text-danger{% endif %}">
-                            {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}+{% else %}-{% endif %}R{{ transaction.amount }}
+                            {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}+{% else %}-{% endif %}{{ transaction.amount|currency }}
                         </p>
                     </div>
                     <div class="col-md-6">
                         <h5 class="text-muted">Balance After Transaction</h5>
-                        <p class="lead">R{{ transaction.balance_after }}</p>
+                        <p class="lead">{{ transaction.balance_after|currency }}</p>
                     </div>
                 </div>
                 

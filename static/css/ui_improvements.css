@@ -1,0 +1,163 @@
+/* Additional UI fixes for the P2P platform */
+
+/* Fix for dashboard card consistency */
+.card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Fix for progress bars */
+.progress {
+  height: 0.5rem; 
+  background-color: #e2e8f0;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.progress-bar {
+  border-radius: 1rem;
+}
+
+/* Fix for button groups */
+.btn-group .btn {
+  border-radius: 0.375rem;
+  margin: 0 0.125rem;
+}
+
+/* Fix for form groups spacing */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+/* Fix for alerts */
+.alert {
+  border-radius: 0.375rem;
+  border: none;
+}
+
+/* Fix for tab navigation */
+.nav-tabs {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  font-weight: 500;
+  color: #64748b;
+  padding: 0.75rem 1rem;
+  margin-bottom: -1px;
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: transparent;
+  color: #2563eb;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #2563eb;
+  color: #2563eb;
+  background-color: transparent;
+}
+
+/* Fix icon vertical alignment */
+.nav-link i, 
+.btn i, 
+.dropdown-item i {
+  vertical-align: middle;
+  margin-top: -0.125rem;
+}
+
+/* Fix font size for different screen sizes */
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  .btn {
+    padding: 0.4rem 1rem;
+  }
+  .table {
+    font-size: 0.875rem;
+  }
+  .card-body {
+    padding: 1.25rem;
+  }
+}
+
+/* Fix tooltip placement */
+.tooltip {
+  font-size: 0.75rem;
+}
+
+/* Fix for dropdown hover states */
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #1e40af;
+}
+
+/* Fix modal paddings */
+.modal-header, 
+.modal-footer {
+  padding: 1rem 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Fix placeholder color */
+::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* Fix badge styles in buttons */
+.btn .badge {
+  position: relative;
+  top: -1px;
+}
+
+/* Fix label styles */
+label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #334155;
+}
+
+/* Fix pagination consistency */
+.pagination {
+  margin-bottom: 0;
+}
+
+.page-link {
+  color: #2563eb;
+  border-color: #e2e8f0;
+  padding: 0.5rem 0.75rem;
+}
+
+.page-link:hover {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #1e40af;
+}
+
+.page-item.active .page-link {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Fix list group styles */
+.list-group-item {
+  border-color: #e2e8f0;
+  padding: 1rem 1.25rem;
+}

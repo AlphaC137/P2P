@@ -1,3 +1,4 @@
+{% load currency_format %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +17,10 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/additions.css">
+    <link rel="stylesheet" href="/static/css/fixes.css">
+    <link rel="stylesheet" href="/static/css/currency_fix.css">
+    <link rel="stylesheet" href="/static/css/ui_improvements.css">
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -68,7 +73,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:wallet' %}">
                                 <i class="fas fa-wallet me-1"></i> Wallet
-                                <span class="badge bg-success ms-1">R{{ user.profile.available_balance|floatformat:2 }}</span>
+                                <span class="badge bg-success ms-1">{{ user.profile.available_balance|currency }}</span>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
@@ -224,6 +229,8 @@
     
     <!-- Custom JavaScript -->
     <script src="/static/js/main.js"></script>
+    <script src="/static/js/ui_fixes.js"></script>
+    <script src="/static/js/form_validation.js"></script>
     
     <script>
         // Activate the current nav link
@@ -234,6 +241,16 @@
             navLinks.forEach(link => {
                 if(link.getAttribute('href') === currentPath) {
                     link.classList.add('active', 'fw-bold');
+                }
+            });
+            
+            // Fix currency formatting inconsistencies
+            const currencyNodes = document.querySelectorAll('.currency-fix');
+            currencyNodes.forEach(node => {
+                const value = node.textContent.trim();
+                if (value.startsWith('R')) {
+                    const numValue = value.substring(1).trim();
+                    node.textContent = 'R ' + numValue;
                 }
             });
         });

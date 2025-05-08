@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Loan Marketplace - P2P Lending{% endblock %}
 
@@ -53,7 +54,7 @@
                                 <div class="col-md-6">
                                     <label for="min_amount" class="form-label small">Min Amount</label>
                                     <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                        <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
                                         <input type="number" class="form-control" id="min_amount" name="min_amount" value="{{ min_amount }}" placeholder="Min">
                                     </div>
                                 </div>

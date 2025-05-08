@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Wallet - P2P Lending{% endblock %}
 
@@ -17,7 +18,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">Balance: R{{ wallet.balance }}</h3>
+                <h3 class="mb-0">Balance: {{ wallet.balance|currency }}</h3>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
@@ -43,13 +44,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="stat-box">
-                            <div class="stat-value">R{{ user.profile.investor_profile.total_invested }}</div>
+                            <div class="stat-value">{{ user.profile.investor_profile.total_invested|currency }}</div>
                             <div class="stat-label">Total Invested</div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="stat-box">
-                            <div class="stat-value">R{{ user.profile.investor_profile.total_earnings }}</div>
+                            <div class="stat-value">{{ user.profile.investor_profile.total_earnings|currency }}</div>
                             <div class="stat-label">Total Earnings</div>
                         </div>
                     </div>
@@ -92,9 +93,9 @@
                                         </td>
                                         <td>
                                             {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}
-                                                <span class="text-success">+R{{ transaction.amount }}</span>
+                                                <span class="text-success">+{{ transaction.amount|currency }}</span>
                                             {% else %}
-                                                <span class="text-danger">-R{{ transaction.amount }}</span>
+                                                <span class="text-danger">-{{ transaction.amount|currency }}</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ transaction.description }}</td>
