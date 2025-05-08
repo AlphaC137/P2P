@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from django.db import models
 from .models import UserProfile, Wallet, Transaction
 from .forms import (
     UserRegistrationForm, InvestorProfileForm, BorrowerProfileForm, 
