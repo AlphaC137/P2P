@@ -170,7 +170,7 @@ class DepositForm(forms.Form):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         if amount < Decimal('10.00'):
-            raise forms.ValidationError('Minimum deposit amount is $10.00')
+            raise forms.ValidationError('Minimum deposit amount is R10.00')
         return amount
 
 class WithdrawalForm(forms.Form):
@@ -189,7 +189,7 @@ class WithdrawalForm(forms.Form):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         if amount < Decimal('10.00'):
-            raise forms.ValidationError("Minimum withdrawal amount is $10.00")
+            raise forms.ValidationError("Minimum withdrawal amount is R10.00")
         
         if self.user and amount > self.user.wallet.balance:
             raise forms.ValidationError(f"You can't withdraw more than your current balance (${self.user.wallet.balance})")

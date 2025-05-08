@@ -14,19 +14,19 @@
 <div class="row dashboard-stats mb-4">
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ wallet.balance }}</div>
+            <div class="stat-value">R{{ wallet.balance }}</div>
             <div class="stat-label">Available Balance</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ total_borrowed }}</div>
+            <div class="stat-value">R{{ total_borrowed }}</div>
             <div class="stat-label">Total Borrowed</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ total_repaid }}</div>
+            <div class="stat-value">R{{ total_repaid }}</div>
             <div class="stat-label">Total Repaid</div>
         </div>
     </div>
@@ -161,7 +161,7 @@
                                         <td>{{ item.loan.title }}</td>
                                         <td>{{ item.payment.payment_number }} of {{ item.loan.term_months }}</td>
                                         <td>{{ item.payment.due_date|date:"M d, Y" }}</td>
-                                        <td>${{ item.payment.amount_due }}</td>
+                                        <td>R{{ item.payment.amount_due }}</td>
                                         <td>
                                             <span class="badge {% if item.payment.status == 'late' %}bg-danger{% else %}bg-warning{% endif %}">
                                                 {{ item.payment.get_status_display }}
@@ -210,10 +210,10 @@
                                 {% for loan in active_loans %}
                                     <tr>
                                         <td>{{ loan.title }}</td>
-                                        <td>${{ loan.amount }}</td>
+                                        <td>R{{ loan.amount }}</td>
                                         <td>{{ loan.interest_rate }}%</td>
                                         <td>{{ loan.term_months }} months</td>
-                                        <td>${{ loan.monthly_payment }}</td>
+                                        <td>R{{ loan.monthly_payment }}</td>
                                         <td>
                                             <span class="badge {% if loan.status == 'funded' %}bg-success{% elif loan.status == 'active' %}bg-info{% else %}bg-secondary{% endif %}">
                                                 {{ loan.get_status_display }}
@@ -254,7 +254,7 @@
                                 <div class="card loan-card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ loan.title }}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">R{{ loan.amount }} at {{ loan.interest_rate }}%</</h6>
                                         <p class="card-text">{{ loan.description|truncatechars:100 }}</p>
                                         <div class="progress mb-3">
                                             <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">

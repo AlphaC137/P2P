@@ -6,7 +6,7 @@ This is a friendly reminder that your payment for the loan "{{ loan_title }}" is
 
 Payment Details:
 - Payment #: {{ payment_number }} of {{ total_payments }}
-- Amount Due: ${{ amount_due }}
+- Amount Due: R{{ amount_due }}
 - Due Date: {{ due_date }}
 - Days Until Due: {{ days_until_due }}
 

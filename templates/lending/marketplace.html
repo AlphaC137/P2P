@@ -182,7 +182,7 @@
                                 <div class="loan-stats d-flex gap-3 mb-3">
                                     <div class="loan-stat">
                                         <span class="d-block text-muted small">Amount</span>
-                                        <span class="fw-bold">${{ loan.amount }}</span>
+                                        <span class="fw-bold">R{{ loan.amount }}</span>
                                     </div>
                                     <div class="loan-stat">
                                         <span class="d-block text-muted small">Term</span>
@@ -303,19 +303,19 @@
                                             <div class="col-4 border-end">
                                                 <div class="text-center">
                                                     <h6 class="text-muted mb-1 small">Monthly</h6>
-                                                    <h4 class="mb-0 text-primary" id="calc-monthly-payment">$0.00</h4>
+                                                    <h4 class="mb-0 text-primary" id="calc-monthly-payment">R0.00</h4>
                                                 </div>
                                             </div>
                                             <div class="col-4 border-end">
                                                 <div class="text-center">
                                                     <h6 class="text-muted mb-1 small">Interest</h6>
-                                                    <h4 class="mb-0 text-danger" id="calc-total-interest">$0.00</h4>
+                                                    <h4 class="mb-0 text-danger" id="calc-total-interest">R0.00</h4>
                                                 </div>
                                             </div>
                                             <div class="col-4">
                                                 <div class="text-center">
                                                     <h6 class="text-muted mb-1 small">Total</h6>
-                                                    <h4 class="mb-0 text-success" id="calc-total-payment">$0.00</h4>
+                                                    <h4 class="mb-0 text-success" id="calc-total-payment">R0.00</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -394,13 +394,13 @@
             const monthlyPayment = (principal * x * interestRate) / (x - 1);
             
             if (isFinite(monthlyPayment)) {
-                calcMonthlyPayment.innerText = '$' + monthlyPayment.toFixed(2);
-                calcTotalPayment.innerText = '$' + (monthlyPayment * numberOfPayments).toFixed(2);
-                calcTotalInterest.innerText = '$' + ((monthlyPayment * numberOfPayments) - principal).toFixed(2);
+                calcMonthlyPayment.innerText = 'R' + monthlyPayment.toFixed(2);
+                calcTotalPayment.innerText = 'R' + (monthlyPayment * numberOfPayments).toFixed(2);
+                calcTotalInterest.innerText = 'R' + ((monthlyPayment * numberOfPayments) - principal).toFixed(2);
             } else {
-                calcMonthlyPayment.innerText = '$0.00';
-                calcTotalPayment.innerText = '$0.00';
-                calcTotalInterest.innerText = '$0.00';
+                calcMonthlyPayment.innerText = 'R0.00';
+                calcTotalPayment.innerText = 'R0.00';
+                calcTotalInterest.innerText = 'R0.00';
             }
         }
         

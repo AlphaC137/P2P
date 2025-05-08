@@ -29,7 +29,7 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Amount:</span>
-                                <strong>${{ loan.amount }}</strong>
+                                <strong>R{{ loan.amount }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Interest Rate:</span>
@@ -41,7 +41,7 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Monthly Payment:</span>
-                                <strong>${{ loan.monthly_payment }}</strong>
+                                <strong>R{{ loan.monthly_payment }}</strong>
                             </li>
                         </ul>
                     </div>
@@ -59,7 +59,7 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Amount Due:</span>
-                                    <strong>${{ next_payment.amount_due }}</strong>
+                                    <strong>R{{ next_payment.amount_due }}</strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Status:</span>
@@ -131,9 +131,9 @@
                                 <tr {% if payment == next_payment %}class="table-primary"{% endif %}>
                                     <td>{{ payment.payment_number }}</td>
                                     <td>{{ payment.due_date|date:"M d, Y" }}</td>
-                                    <td>${{ payment.amount_due }}</td>
-                                    <td>${{ payment.principal }}</td>
-                                    <td>${{ payment.interest }}</td>
+                                    <td>R{{ payment.amount_due }}</td>
+                                    <td>R{{ payment.principal }}</td>
+                                    <td>R{{ payment.interest }}</td>
                                     <td>
                                         <span class="badge 
                                             {% if payment.status == 'paid' %}bg-success

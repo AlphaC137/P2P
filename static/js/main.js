@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const totalAmount = monthlyAmount * termMonths;
                 const interestAmount = totalAmount - principal;
 
-                monthlyPayment.textContent = '$' + monthlyAmount.toFixed(2);
-                totalInterest.textContent = '$' + interestAmount.toFixed(2);
-                totalPayment.textContent = '$' + totalAmount.toFixed(2);
+                monthlyPayment.textContent = 'R' + monthlyAmount.toFixed(2);
+                totalInterest.textContent = 'R' + interestAmount.toFixed(2);
+                totalPayment.textContent = 'R' + totalAmount.toFixed(2);
             }
         }
 
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         investmentSlider.addEventListener('input', function() {
             const value = this.value;
-            amountDisplay.textContent = '$' + parseFloat(value).toFixed(2);
+            amountDisplay.textContent = 'R' + parseFloat(value).toFixed(2);
             amountInput.value = value;
         });
     }

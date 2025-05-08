@@ -14,7 +14,7 @@
 <div class="row dashboard-stats mb-4">
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ wallet.balance }}</div>
+            <div class="stat-value">R{{ wallet.balance }}</div>
             <div class="stat-label">Available Balance</div>
             <div class="mt-2">
                 <a href="{% url 'accounts:deposit_funds' %}" class="btn btn-sm btn-primary">Deposit</a>
@@ -24,13 +24,13 @@
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ total_invested }}</div>
+            <div class="stat-value">R{{ total_invested }}</div>
             <div class="stat-label">Total Invested</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ total_returns }}</div>
+            <div class="stat-value">R{{ total_returns }}</div>
             <div class="stat-label">Total Earnings</div>
         </div>
     </div>
@@ -68,7 +68,7 @@
                                 {% for investment in active_investments %}
                                     <tr>
                                         <td>{{ investment.loan.title }}</td>
-                                        <td>${{ investment.amount }}</td>
+                                        <td>R{{ investment.amount }}</td>
                                         <td>{{ investment.loan.interest_rate }}%</td>
                                         <td>
                                             <span class="badge {% if investment.loan.status == 'funded' %}bg-success{% elif investment.loan.status == 'active' %}bg-info{% else %}bg-secondary{% endif %}">
@@ -111,7 +111,7 @@
                                 <div class="card loan-card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ loan.title }}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">R{{ loan.amount }} at {{ loan.interest_rate }}%</h6>
                                         <p class="card-text">{{ loan.description|truncatechars:100 }}</p>
                                         <div class="progress mb-3">
                                             <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">
@@ -170,9 +170,9 @@
                                         </td>
                                         <td>
                                             {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}
-                                                <span class="text-success">+${{ transaction.amount }}</span>
+                                                <span class="text-success">+R{{ transaction.amount }}</span>
                                             {% else %}
-                                                <span class="text-danger">-${{ transaction.amount }}</span>
+                                                <span class="text-danger">-R{{ transaction.amount }}</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ transaction.description }}</td>

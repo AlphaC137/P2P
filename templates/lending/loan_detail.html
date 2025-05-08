@@ -35,15 +35,15 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-1">
-                        <small>${{ loan.current_funded_amount }} raised</small>
-                        <small>${{ loan.amount }} goal</small>
+                        <small>R{{ loan.current_funded_amount }} raised</small>
+                        <small>R{{ loan.amount }} goal</small>
                     </div>
                 </div>
                 
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Loan Amount:</span>
-                        <strong>${{ loan.amount }}</strong>
+                        <strong>R{{ loan.amount }}</strong>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Interest Rate:</span>
@@ -55,11 +55,11 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Monthly Payment:</span>
-                        <strong>${{ loan.monthly_payment }}</strong>
+                        <strong>R{{ loan.monthly_payment }}</strong>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total Repayment:</span>
-                        <strong>${{ loan.total_repayment }}</strong>
+                        <strong>R{{ loan.total_repayment }}</strong>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Risk Score:</span>
@@ -116,9 +116,9 @@
                                 <tr>
                                     <td>{{ payment.payment_number }}</td>
                                     <td>{{ payment.due_date|date:"M d, Y" }}</td>
-                                    <td>${{ payment.amount_due }}</td>
-                                    <td>${{ payment.principal }}</td>
-                                    <td>${{ payment.interest }}</td>
+                                    <td>R{{ payment.amount_due }}</td>
+                                    <td>R{{ payment.principal }}</td>
+                                    <td>R{{ payment.interest }}</td>
                                     <td>
                                         <span class="badge 
                                             {% if payment.status == 'paid' %}bg-success
@@ -169,7 +169,7 @@
                                 {% for investment in investments %}
                                     <tr>
                                         <td>{{ investment.investor.username }}</td>
-                                        <td>${{ investment.amount }}</td>
+                                        <td>R{{ investment.amount }}</td>
                                         <td>{{ investment.investment_percentage|floatformat:2 }}%</td>
                                         <td>{{ investment.date_invested|date:"M d, Y H:i" }}</td>
                                     </tr>

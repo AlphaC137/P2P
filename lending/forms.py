@@ -108,9 +108,9 @@ class LoanRequestForm(forms.Form):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         if amount < Decimal('100.00'):
-            raise forms.ValidationError('Minimum loan amount is $100.00')
+            raise forms.ValidationError('Minimum loan amount is R100.00')
         if amount > Decimal('50000.00'):
-            raise forms.ValidationError('Maximum loan amount is $50,000.00')
+            raise forms.ValidationError('Maximum loan amount is R50,000.00')
         return amount
     
     def clean_term_months(self):
@@ -168,7 +168,7 @@ class InvestmentForm(forms.Form):
     def clean_amount(self):
         amount = self.cleaned_data.get('amount')
         if amount < Decimal('10.00'):
-            raise forms.ValidationError('Minimum investment amount is $10.00')
+            raise forms.ValidationError('Minimum investment amount is R10.00')
         return amount
 
 class LoanRepaymentForm(forms.Form):

@@ -29,7 +29,7 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Amount:</span>
-                                <strong>${{ loan.amount }}</strong>
+                                <strong>R{{ loan.amount }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Interest Rate:</span>
@@ -50,15 +50,15 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Available Balance:</span>
-                                <strong>${{ investor_balance }}</strong>
+                                <strong>R{{ investor_balance }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Already Funded:</span>
-                                <strong>${{ loan.current_funded_amount }}</strong>
+                                <strong>R{{ loan.current_funded_amount }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Remaining Amount:</span>
-                                <strong>${{ loan.amount|floatformat:2|default:"0.00" }} - ${{ loan.current_funded_amount|floatformat:2|default:"0.00" }} = ${{ loan.amount|floatformat:2|default:"0.00"|add:"-"|add:loan.current_funded_amount|floatformat:2|default:"0.00" }}</strong>
+                                <strong>R{{ loan.amount|floatformat:2|default:"0.00" }} - R{{ loan.current_funded_amount|floatformat:2|default:"0.00" }} = R{{ loan.amount|floatformat:2|default:"0.00"|add:"-"|add:loan.current_funded_amount|floatformat:2|default:"0.00" }}</strong>
                             </li>
                         </ul>
                     </div>

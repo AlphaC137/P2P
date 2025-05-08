@@ -8,9 +8,9 @@ YOUR PAYMENT IS NOW {{ days_overdue }} DAYS OVERDUE.
 
 Payment Details:
 - Payment #: {{ payment_number }} of {{ total_payments }}
-- Original Amount Due: ${{ original_amount }}
-- Late Fee: ${{ late_fee }}
-- Total Amount Due: ${{ amount_due }}
+- Original Amount Due: R{{ original_amount }}
+- Late Fee: R{{ late_fee }}
+- Total Amount Due: R{{ amount_due }}
 - Original Due Date: {{ due_date }}
 
 A late fee has been added to your payment. Please make your payment as soon as possible to avoid negative impact on your credit score and possible loan default.

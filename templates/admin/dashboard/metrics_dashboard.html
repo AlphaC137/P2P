@@ -159,17 +159,17 @@
     <div class="stats-container">
         <div class="stats-card">
             <h3>Total Loan Volume</h3>
-            <div class="stat-value">${{ total_loan_volume|floatformat:2 }}</div>
+            <div class="stat-value">R{{ total_loan_volume|floatformat:2 }}</div>
             <div class="stat-label">Value of active/completed loans</div>
         </div>
         <div class="stats-card">
             <h3>Total Investment Volume</h3>
-            <div class="stat-value">${{ total_investment_volume|floatformat:2 }}</div>
+            <div class="stat-value">R{{ total_investment_volume|floatformat:2 }}</div>
             <div class="stat-label">Total investment amount</div>
         </div>
         <div class="stats-card">
             <h3>Average Loan Amount</h3>
-            <div class="stat-value">${{ avg_loan_amount|floatformat:2 }}</div>
+            <div class="stat-value">R{{ avg_loan_amount|floatformat:2 }}</div>
             <div class="stat-label">Average per loan</div>
         </div>
         <div class="stats-card">
@@ -179,7 +179,7 @@
         </div>
         <div class="stats-card">
             <h3>System Balance</h3>
-            <div class="stat-value">${{ total_system_balance|floatformat:2 }}</div>
+            <div class="stat-value">R{{ total_system_balance|floatformat:2 }}</div>
             <div class="stat-label">Total wallet balances</div>
         </div>
     </div>
@@ -228,7 +228,7 @@
             <tr>
                 <td>{{ loan.title }}</td>
                 <td>{{ loan.borrower.username }}</td>
-                <td>${{ loan.amount }}</td>
+                <td>R{{ loan.amount }}</td>
                 <td>
                     <span class="badge {% if loan.status == 'active' %}badge-primary{% elif loan.status == 'funded' %}badge-success{% elif loan.status == 'pending' %}badge-warning{% elif loan.status == 'repaid' %}badge-info{% else %}badge-danger{% endif %}">
                         {{ loan.get_status_display }}
@@ -257,7 +257,7 @@
             <tr>
                 <td>{{ investment.investor.username }}</td>
                 <td>{{ investment.loan.title }}</td>
-                <td>${{ investment.amount }}</td>
+                <td>R{{ investment.amount }}</td>
                 <td>{{ investment.date_invested|date:"M d, Y" }}</td>
                 <td><a href="{% url 'admin:lending_investment_change' investment.id %}" class="button">View</a></td>
             </tr>
@@ -285,7 +285,7 @@
                         {{ transaction.get_transaction_type_display }}
                     </span>
                 </td>
-                <td>${{ transaction.amount }}</td>
+                <td>R{{ transaction.amount }}</td>
                 <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
                 <td><a href="{% url 'admin:accounts_transaction_change' transaction.id %}" class="button">View</a></td>
             </tr>
