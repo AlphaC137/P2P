@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load currency_format %}
 
 {% block title %}Loan Repayment - P2P Lending{% endblock %}
 
@@ -29,7 +30,7 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Amount:</span>
-                                <strong>R{{ loan.amount }}</strong>
+                                <strong>{{ loan.amount|currency }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Interest Rate:</span>
@@ -41,7 +42,7 @@
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Monthly Payment:</span>
-                                <strong>R{{ loan.monthly_payment }}</strong>
+                                <strong>{{ loan.monthly_payment|currency }}</strong>
                             </li>
                         </ul>
                     </div>
@@ -59,7 +60,7 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Amount Due:</span>
-                                    <strong>R{{ next_payment.amount_due }}</strong>
+                                    <strong>{{ next_payment.amount_due|currency }}</strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Status:</span>
@@ -131,9 +132,9 @@
                                 <tr {% if payment == next_payment %}class="table-primary"{% endif %}>
                                     <td>{{ payment.payment_number }}</td>
                                     <td>{{ payment.due_date|date:"M d, Y" }}</td>
-                                    <td>R{{ payment.amount_due }}</td>
-                                    <td>R{{ payment.principal }}</td>
-                                    <td>R{{ payment.interest }}</td>
+                                    <td>{{ payment.amount_due|currency }}</td>
+                                    <td>{{ payment.principal|currency }}</td>
+                                    <td>{{ payment.interest|currency }}</td>
                                     <td>
                                         <span class="badge 
                                             {% if payment.status == 'paid' %}bg-success

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Borrower Dashboard - P2P Lending{% endblock %}
 
@@ -14,19 +15,19 @@
 <div class="row dashboard-stats mb-4">
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ wallet.balance }}</div>
+            <div class="stat-value">{{ wallet.balance|currency }}</div>
             <div class="stat-label">Available Balance</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ total_borrowed }}</div>
+            <div class="stat-value">{{ total_borrowed|currency }}</div>
             <div class="stat-label">Total Borrowed</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ total_repaid }}</div>
+            <div class="stat-value">{{ total_repaid|currency }}</div>
             <div class="stat-label">Total Repaid</div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Wallet Statistics - P2P Lending{% endblock %}
 
@@ -25,7 +26,7 @@
     <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
-                <h3 class="text-primary">R{{ wallet.balance }}</h3>
+                <h3 class="text-primary">{{ wallet.balance|currency }}</h3>
                 <p class="text-muted">Current Balance</p>
             </div>
         </div>
@@ -33,7 +34,7 @@
     <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
-                <h3 class="text-success">R{{ deposit_sum }}</h3>
+                <h3 class="text-success">{{ deposit_sum|currency }}</h3>
                 <p class="text-muted">Total Deposits</p>
             </div>
         </div>
@@ -41,7 +42,7 @@
     <div class="col-md-3">
         <div class="card text-center">
             <div class="card-body">
-                <h3 class="text-danger">R{{ withdrawal_sum }}</h3>
+                <h3 class="text-danger">{{ withdrawal_sum|currency }}</h3>
                 <p class="text-muted">Total Withdrawals</p>
             </div>
         </div>
@@ -95,9 +96,9 @@
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">
                                 {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}
-                                <span class="text-success">+R{{ transaction.amount }}</span>
+                                <span class="text-success">+{{ transaction.amount|currency }}</span>
                                 {% else %}
-                                <span class="text-danger">-R{{ transaction.amount }}</span>
+                                <span class="text-danger">-{{ transaction.amount|currency }}</span>
                                 {% endif %}
                             </h5>
                             <small>{{ transaction.timestamp|date:"M d, Y" }}</small>
@@ -132,7 +133,7 @@
                     <div class="col-md-4">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h3 class="text-primary">R{{ user.profile.investor_profile.total_invested }}</h3>
+                                <h3 class="text-primary">{{ user.profile.investor_profile.total_invested|currency }}</h3>
                                 <p class="text-muted">Total Invested</p>
                             </div>
                         </div>
@@ -140,7 +141,7 @@
                     <div class="col-md-4">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h3 class="text-success">R{{ user.profile.investor_profile.total_earnings }}</h3>
+                                <h3 class="text-success">{{ user.profile.investor_profile.total_earnings|currency }}</h3>
                                 <p class="text-muted">Total Earnings</p>
                             </div>
                         </div>

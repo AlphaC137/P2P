@@ -81,6 +81,11 @@ class Loan(models.Model):
         return (self.current_funded_amount / self.amount) * 100
     
     @property
+    def remaining_amount(self):
+        """Calculate remaining amount needed to fully fund the loan"""
+        return self.amount - self.current_funded_amount
+        
+    @property
     def total_interest(self):
         """Calculate total interest to be paid"""
         return self.total_repayment - self.amount

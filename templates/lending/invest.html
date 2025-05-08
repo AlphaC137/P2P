@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load currency_format %}
 
 {% block title %}Invest in Loan - P2P Lending{% endblock %}
 
@@ -29,7 +30,7 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Amount:</span>
-                                <strong>R{{ loan.amount }}</strong>
+                                <strong>{{ loan.amount|currency }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Interest Rate:</span>
@@ -50,15 +51,15 @@
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Available Balance:</span>
-                                <strong>R{{ investor_balance }}</strong>
+                                <strong>{{ investor_balance|currency }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Already Funded:</span>
-                                <strong>R{{ loan.current_funded_amount }}</strong>
+                                <strong>{{ loan.current_funded_amount|currency }}</strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Remaining Amount:</span>
-                                <strong>R{{ loan.amount|floatformat:2|default:"0.00" }} - R{{ loan.current_funded_amount|floatformat:2|default:"0.00" }} = R{{ loan.amount|floatformat:2|default:"0.00"|add:"-"|add:loan.current_funded_amount|floatformat:2|default:"0.00" }}</strong>
+                                <strong>{{ loan.remaining_amount|currency }}</strong>
                             </li>
                         </ul>
                     </div>

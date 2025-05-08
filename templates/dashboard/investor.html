@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load currency_format %}
 
 {% block title %}Investor Dashboard - P2P Lending{% endblock %}
 
@@ -14,7 +15,7 @@
 <div class="row dashboard-stats mb-4">
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ wallet.balance }}</div>
+            <div class="stat-value">{{ wallet.balance|currency }}</div>
             <div class="stat-label">Available Balance</div>
             <div class="mt-2">
                 <a href="{% url 'accounts:deposit_funds' %}" class="btn btn-sm btn-primary">Deposit</a>
@@ -24,13 +25,13 @@
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ total_invested }}</div>
+            <div class="stat-value">{{ total_invested|currency }}</div>
             <div class="stat-label">Total Invested</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">R{{ total_returns }}</div>
+            <div class="stat-value">{{ total_returns|currency }}</div>
             <div class="stat-label">Total Earnings</div>
         </div>
     </div>
@@ -170,9 +171,9 @@
                                         </td>
                                         <td>
                                             {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}
-                                                <span class="text-success">+R{{ transaction.amount }}</span>
+                                                <span class="text-success">+{{ transaction.amount|currency }}</span>
                                             {% else %}
-                                                <span class="text-danger">-R{{ transaction.amount }}</span>
+                                                <span class="text-danger">-{{ transaction.amount|currency }}</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ transaction.description }}</td>
