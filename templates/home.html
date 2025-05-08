@@ -1,78 +1,604 @@
 {% extends 'base.html' %}
 
-{% block title %}P2P Lending Platform - Home{% endblock %}
+{% block title %}P2P Lending Platform - Connect Borrowers & Investors{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12 text-center mb-5">
-        <h1 class="display-4">Welcome to P2P Lending</h1>
-        <p class="lead">Connect borrowers with investors through a secure platform</p>
-    </div>
-</div>
-
-<div class="row mb-5">
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="card-title">For Borrowers</h2>
-                <p class="card-text">Need funds for your business or personal projects? Our platform connects you with investors willing to fund your ideas.</p>
-                <ul>
-                    <li>Competitive interest rates based on your profile</li>
-                    <li>Fast funding process</li>
-                    <li>Transparent repayment terms</li>
-                    <li>No hidden fees</li>
-                </ul>
-                <a href="{% url 'accounts:register_borrower' %}" class="btn btn-primary">Register as Borrower</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <h2 class="card-title">For Investors</h2>
-                <p class="card-text">Looking to diversify your portfolio? Invest directly in loans to individuals and small businesses.</p>
-                <ul>
-                    <li>Higher returns than traditional investments</li>
-                    <li>Choose your risk level</li>
-                    <li>Invest as little as $10 per loan</li>
-                    <li>Transparent fee structure</li>
-                </ul>
-                <a href="{% url 'accounts:register_investor' %}" class="btn btn-primary">Register as Investor</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card text-center bg-light">
-            <div class="card-body">
-                <h3>How It Works</h3>
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <div class="p-3">
-                            <h4>1. Register</h4>
-                            <p>Create an account as a borrower or investor</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="p-3">
-                            <h4>2. Get Started</h4>
-                            <p>Request a loan or browse loan marketplace</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="p-3">
-                            <h4>3. Transact</h4>
-                            <p>Fund loans or make repayments securely</p>
-                        </div>
-                    </div>
+<!-- Hero Section -->
+<section class="hero position-relative overflow-hidden">
+    <div class="container hero-content position-relative z-3">
+        <div class="row align-items-center">
+            <div class="col-lg-6 fade-in">
+                <h1 class="display-4 fw-bold mb-4">Peer-to-Peer Lending Made Simple</h1>
+                <p class="lead mb-4">Connect directly with borrowers or investors. Cut out the middleman and enjoy better rates for everyone.</p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    <a href="{% url 'accounts:register_investor' %}" class="btn btn-light btn-lg px-4 shadow-sm">Start Investing</a>
+                    <a href="{% url 'accounts:register_borrower' %}" class="btn btn-outline-light btn-lg px-4">Get a Loan</a>
                 </div>
-                <div class="mt-4">
-                    <a href="{% url 'lending:marketplace' %}" class="btn btn-outline-primary">Browse Marketplace</a>
+                <div class="mt-4 d-flex align-items-center gap-2">
+                    <div class="d-flex">
+                        <img src="/static/img/ui/trust-badge.svg" alt="Trusted Platform" class="img-fluid" style="height: 40px;">
+                    </div>
+                    <p class="mb-0 text-white opacity-75">Trusted by 15,000+ users worldwide</p>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block fade-in">
+                <div class="position-relative">
+                    <img src="/static/img/hero/hero-img.png" alt="P2P Lending" class="img-fluid rounded-4 shadow-lg">
+                    <div class="position-absolute bg-white p-3 rounded-4 shadow-lg" style="bottom: -20px; right: -20px; max-width: 200px;">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3 bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 text-success fw-bold fs-4">9.2%</p>
+                                <p class="mb-0 text-muted small">Avg. Returns</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <!-- Abstract shapes in background -->
+    <div class="position-absolute top-0 end-0 d-none d-lg-block z-1" style="opacity: 0.1;">
+        <img src="/static/img/hero/shapes.svg" alt="" width="400">
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-3 col-6">
+                <div class="stat-item text-center fade-in">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="stat-icon bg-primary-soft rounded-circle">
+                            <i class="fas fa-dollar-sign text-primary"></i>
+                        </div>
+                    </div>
+                    <p class="stat-number fw-bold mb-0">$24M+</p>
+                    <p class="stat-label mb-0 text-muted">Funded Loans</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item text-center fade-in">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="stat-icon bg-success-soft rounded-circle">
+                            <i class="fas fa-users text-success"></i>
+                        </div>
+                    </div>
+                    <p class="stat-number fw-bold mb-0">15,000+</p>
+                    <p class="stat-label mb-0 text-muted">Active Users</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item text-center fade-in">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="stat-icon bg-info-soft rounded-circle">
+                            <i class="fas fa-chart-pie text-info"></i>
+                        </div>
+                    </div>
+                    <p class="stat-number fw-bold mb-0">9.2%</p>
+                    <p class="stat-label mb-0 text-muted">Avg. Returns</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item text-center fade-in">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="stat-icon bg-warning-soft rounded-circle">
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                    </div>
+                    <p class="stat-number fw-bold mb-0">4.8/5</p>
+                    <p class="stat-label mb-0 text-muted">User Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light" id="how-it-works">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-soft text-primary rounded-pill px-3 py-2 mb-2">Simple Process</span>
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Our platform connects borrowers with investors directly, making the process simple, transparent, and efficient</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h3 class="card-title mb-0">For Borrowers</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">1</div>
+                            </div>
+                            <div>
+                                <h5>Create an account</h5>
+                                <p class="text-muted">Sign up and complete your profile with your personal and financial information.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">2</div>
+                            </div>
+                            <div>
+                                <h5>Request a loan</h5>
+                                <p class="text-muted">Specify how much you need, what it's for, and set your repayment terms.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">3</div>
+                            </div>
+                            <div>
+                                <h5>Get funded</h5>
+                                <p class="text-muted">Once investors fund your loan, the money is transferred to your account.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="me-4">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">4</div>
+                            </div>
+                            <div>
+                                <h5>Repay on schedule</h5>
+                                <p class="text-muted">Make regular repayments according to your loan schedule.</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'accounts:register_borrower' %}" class="btn btn-primary">Apply for a Loan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-header bg-success text-white py-3">
+                        <h3 class="card-title mb-0">For Investors</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">1</div>
+                            </div>
+                            <div>
+                                <h5>Create an account</h5>
+                                <p class="text-muted">Sign up and complete your investor profile to start investing.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">2</div>
+                            </div>
+                            <div>
+                                <h5>Fund your wallet</h5>
+                                <p class="text-muted">Add money to your platform wallet to prepare for investments.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-4">
+                            <div class="me-4">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">3</div>
+                            </div>
+                            <div>
+                                <h5>Choose investments</h5>
+                                <p class="text-muted">Browse available loans and invest in ones that match your criteria.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <div class="me-4">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">4</div>
+                            </div>
+                            <div>
+                                <h5>Collect returns</h5>
+                                <p class="text-muted">Receive principal and interest payments as borrowers repay their loans.</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'accounts:register_investor' %}" class="btn btn-success">Start Investing</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-soft text-success rounded-pill px-3 py-2 mb-2">Why Choose Us</span>
+            <h2 class="fw-bold">Why Choose Our Platform</h2>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">We offer a modern approach to lending and investing with numerous benefits</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-primary-soft text-primary">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                        </div>
+                        <h4>Secure & Transparent</h4>
+                        <p class="text-muted">All transactions are protected with bank-level security and completely transparent.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-success-soft text-success">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </div>
+                        <h4>Better Rates</h4>
+                        <p class="text-muted">Lower interest rates for borrowers and higher returns for investors compared to traditional options.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-info-soft text-info">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                        </div>
+                        <h4>Fast & Efficient</h4>
+                        <p class="text-muted">Quick application process and speedy funding with minimal paperwork and hassle.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-warning-soft text-warning">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <h4>Portfolio Diversification</h4>
+                        <p class="text-muted">Spread your investments across multiple loans to manage risk and maximize returns.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-danger-soft text-danger">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
+                        <h4>Smart Risk Assessment</h4>
+                        <p class="text-muted">Advanced algorithms analyze borrower data to provide accurate risk profiles.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 col-sm-6">
+                <div class="card feature-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon-container mb-3">
+                            <div class="feature-icon bg-primary-soft text-primary">
+                                <i class="fas fa-comments-dollar"></i>
+                            </div>
+                        </div>
+                        <h4>Community Support</h4>
+                        <p class="text-muted">Join a community of like-minded individuals helping each other achieve financial goals.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Loans -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <span class="badge bg-primary-soft text-primary rounded-pill px-3 py-2 mb-2">Investment Opportunities</span>
+                <h2 class="fw-bold mb-0">Featured Loans</h2>
+            </div>
+            <a href="{% url 'lending:marketplace' %}" class="btn btn-outline-primary">View Marketplace</a>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Loan Card 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card loan-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="position-relative">
+                        <img src="/static/img/loans/business-loan.jpg" class="card-img-top" alt="Small Business">
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-3">Business</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">Small Business Expansion</h5>
+                            <span class="loan-interest rounded-pill bg-success-soft text-success px-2 py-1">9.5%</span>
+                        </div>
+                        <p class="card-text text-muted">Funding to expand my local coffee shop with new equipment and hiring additional staff.</p>
+                        <div class="loan-stats d-flex gap-3 mb-3">
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Amount</span>
+                                <span class="fw-bold">$25,000</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Term</span>
+                                <span class="fw-bold">24 months</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Risk</span>
+                                <span class="fw-bold text-warning">Medium</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Funded:</span>
+                            <span class="fw-bold small">75%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <a href="{% url 'lending:marketplace' %}" class="btn btn-sm btn-primary w-100">Invest Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loan Card 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card loan-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="position-relative">
+                        <img src="/static/img/loans/education-loan.jpg" class="card-img-top" alt="Education">
+                        <span class="badge bg-success position-absolute top-0 end-0 m-3">Education</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">Coding Bootcamp</h5>
+                            <span class="loan-interest rounded-pill bg-success-soft text-success px-2 py-1">7.8%</span>
+                        </div>
+                        <p class="card-text text-muted">Seeking funding for a 12-week intensive coding bootcamp to transition to a career in software development.</p>
+                        <div class="loan-stats d-flex gap-3 mb-3">
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Amount</span>
+                                <span class="fw-bold">$12,000</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Term</span>
+                                <span class="fw-bold">36 months</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Risk</span>
+                                <span class="fw-bold text-success">Low</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Funded:</span>
+                            <span class="fw-bold small">90%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <a href="{% url 'lending:marketplace' %}" class="btn btn-sm btn-primary w-100">Invest Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loan Card 3 -->
+            <div class="col-lg-4 col-md-6"></div>
+                <div class="card loan-card h-100 border-0 shadow-sm hover-lift">
+                    <div class="position-relative">
+                        <img src="/static/img/loans/solar-loan.jpg" class="card-img-top" alt="Solar Panels">
+                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">Home Improvement</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title mb-0">Solar Panel Installation</h5>
+                            <span class="loan-interest rounded-pill bg-success-soft text-success px-2 py-1">6.2%</span>
+                        </div>
+                        <p class="card-text text-muted">Installing solar panels to reduce energy costs and carbon footprint. Will save approximately $200/month in utilities.</p>
+                        <div class="loan-stats d-flex gap-3 mb-3">
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Amount</span>
+                                <span class="fw-bold">$18,500</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Term</span>
+                                <span class="fw-bold">48 months</span>
+                            </div>
+                            <div class="loan-stat">
+                                <span class="d-block text-muted small">Risk</span>
+                                <span class="fw-bold text-success">Low</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Funded:</span>
+                            <span class="fw-bold small">45%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <a href="{% url 'lending:marketplace' %}" class="btn btn-sm btn-primary w-100">Invest Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-info-soft text-info rounded-pill px-3 py-2 mb-2">Success Stories</span>
+            <h2 class="fw-bold">What Our Users Say</h2>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Don't just take our word for it</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card testimonial-card h-100 border-0 shadow-sm p-4 hover-lift">
+                    <div class="testimonial-stars mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="mb-4">"I was able to fund my small business expansion with better rates than any bank offered me. The process was simple and transparent."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="/static/img/ui/testimonial-1.jpg" alt="Sarah Johnson" class="rounded-circle" width="50" height="50">
+                        <div class="ms-3">
+                            <p class="fw-bold mb-0">Sarah Johnson</p>
+                            <p class="text-muted small mb-0">Small Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card testimonial-card h-100 border-0 shadow-sm p-4 hover-lift">
+                    <div class="testimonial-stars mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="mb-4">"As an investor, I've been able to diversify my portfolio with P2P loans. The returns have been consistently higher than my other investments."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="/static/img/ui/testimonial-2.jpg" alt="Mark Thompson" class="rounded-circle" width="50" height="50">
+                        <div class="ms-3">
+                            <p class="fw-bold mb-0">Mark Thompson</p>
+                            <p class="text-muted small mb-0">Investor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card testimonial-card h-100 border-0 shadow-sm p-4 hover-lift">
+                    <div class="testimonial-stars mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="mb-4">"I needed a loan to finish my graduate degree, and traditional lenders weren't interested. This platform connected me with investors who believed in my future."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="/static/img/ui/testimonial-3.jpg" alt="Aisha Rodriguez" class="rounded-circle" width="50" height="50">
+                        <div class="ms-3">
+                            <p class="fw-bold mb-0">Aisha Rodriguez</p>
+                            <p class="text-muted small mb-0">Graduate Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white position-relative overflow-hidden">
+    <div class="container text-center position-relative z-3">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-4">Ready to Get Started?</h2>
+                <p class="lead mb-4">Join thousands of borrowers and investors on our platform today.</p>
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                    <a href="{% url 'accounts:register_investor' %}" class="btn btn-light btn-lg px-4 shadow-sm">Start Investing</a>
+                    <a href="{% url 'accounts:register_borrower' %}" class="btn btn-outline-light btn-lg px-4">Apply for a Loan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Abstract shapes in background -->
+    <div class="position-absolute bottom-0 start-0 d-none d-lg-block z-1" style="opacity: 0.1;">
+        <img src="/static/img/hero/shapes-2.svg" alt="" width="300">
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional styles for the homepage */
+    .hero {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, var(--primary), #4338ca);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+    
+    .bg-primary-soft {
+        background-color: rgba(37, 99, 235, 0.1);
+    }
+    
+    .bg-success-soft {
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+    
+    .bg-info-soft {
+        background-color: rgba(6, 182, 212, 0.1);
+    }
+    
+    .bg-warning-soft {
+        background-color: rgba(245, 158, 11, 0.1);
+    }
+    
+    .bg-danger-soft {
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+    
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+    
+    .z-1 {
+        z-index: 1;
+    }
+    
+    .z-3 {
+        z-index: 3;
+    }
+    
+    .loan-interest {
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}

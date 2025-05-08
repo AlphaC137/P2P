@@ -36,18 +36,73 @@ class LoanRequestForm(forms.Form):
             'max': '60'
         })
     )
-    PURPOSE_CHOICES = [
-        ('personal', 'Personal'),
-        ('business', 'Business'),
-        ('education', 'Education'),
-        ('debt_consolidation', 'Debt Consolidation'),
-        ('home_improvement', 'Home Improvement'),
-        ('medical', 'Medical'),
-        ('other', 'Other')
-    ]
+    
+    # Use the choices from the Loan model
     purpose = forms.ChoiceField(
-        choices=PURPOSE_CHOICES,
+        choices=Loan.LOAN_PURPOSE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
+    purpose_description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Additional details about how you plan to use the loan'
+        })
+    )
+    
+    # Secured loan options
+    is_secured = forms.BooleanField(
+        required=False,
+        label='This is a secured loan (collateral provided)',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    
+    collateral_description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Describe the collateral you are offering (e.g., vehicle, property)'
+        })
+    )
+    
+    collateral_value = forms.DecimalField(
+        required=False,
+        max_digits=12,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Estimated value of collateral',
+            'min': '0',
+            'step': '100.00'
+        })
+    )
+    
+    # Financial information
+    monthly_income = forms.DecimalField(
+        required=True,
+        max_digits=12,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Your monthly income',
+            'min': '0',
+            'step': '100.00'
+        })
+    )
+    
+    monthly_debt_payments = forms.DecimalField(
+        required=True,
+        max_digits=12,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Your monthly debt payments',
+            'min': '0',
+            'step': '10.00'
+        })
     )
     
     def clean_amount(self):
@@ -65,6 +120,36 @@ class LoanRequestForm(forms.Form):
         if term_months > 60:
             raise forms.ValidationError('Maximum loan term is 60 months (5 years)')
         return term_months
+    
+    def clean_collateral_value(self):
+        is_secured = self.cleaned_data.get('is_secured')
+        collateral_value = self.cleaned_data.get('collateral_value')
+        
+        if is_secured and (collateral_value is None or collateral_value <= 0):
+            raise forms.ValidationError('Collateral value is required for secured loans')
+        return collateral_value
+    
+    def clean_collateral_description(self):
+        is_secured = self.cleaned_data.get('is_secured')
+        collateral_description = self.cleaned_data.get('collateral_description')
+        
+        if is_secured and not collateral_description:
+            raise forms.ValidationError('Collateral description is required for secured loans')
+        return collateral_description
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        monthly_income = cleaned_data.get('monthly_income') or Decimal('0')
+        monthly_debt_payments = cleaned_data.get('monthly_debt_payments') or Decimal('0')
+        
+        if monthly_income and monthly_debt_payments:
+            if monthly_income <= 0:
+                self.add_error('monthly_income', 'Monthly income must be greater than zero')
+            elif monthly_debt_payments / monthly_income > Decimal('0.5'):
+                self.add_error('monthly_debt_payments', 
+                              'Your debt-to-income ratio is too high. Monthly debt payments should be less than 50% of your income.')
+        
+        return cleaned_data
 
 class InvestmentForm(forms.Form):
     """Form for investing in a loan"""

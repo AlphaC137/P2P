@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Late Payment Notice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #e74a3b;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .info-box {
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #e74a3b;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LATE PAYMENT NOTICE</h1>
+    </div>
+    <div class="content">
+        <p>Hello {{ borrower_name }},</p>
+        
+        <p><strong>This is an important notice regarding your overdue payment for the loan "{{ loan_title }}".</strong></p>
+        
+        <div class="warning">
+            <h3>⚠️ Your payment is now {{ days_overdue }} days overdue.</h3>
+        </div>
+        
+        <div class="info-box">
+            <h3>Payment Details:</h3>
+            <p><strong>Payment #:</strong> {{ payment_number }} of {{ total_payments }}</p>
+            <p><strong>Original Amount Due:</strong> ${{ original_amount }}</p>
+            <p><strong>Late Fee:</strong> ${{ late_fee }}</p>
+            <p><strong>Total Amount Due:</strong> ${{ amount_due }}</p>
+            <p><strong>Original Due Date:</strong> {{ due_date }}</p>
+        </div>
+        
+        <p>A late fee has been added to your payment. Please make your payment as soon as possible to avoid negative impact on your credit score and possible loan default.</p>
+        
+        <a href="{{ loan_url }}" class="button">Make Payment Now</a>
+        
+        <p>If you're experiencing financial difficulties, please contact our customer support team to discuss possible arrangements.</p>
+        
+        <p>If you've already made this payment after this notice was generated, please disregard this email.</p>
+        
+        <p>Best Regards,<br>
+        The P2P Lending Team</p>
+    </div>
+    <div class="footer">
+        <p>This is an automated message. Please do not reply to this email.</p>
+        <p>&copy; 2025 P2P Lending Platform. All rights reserved.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40">
+  <rect width="120" height="40" rx="20" fill="#ffffff" />
+  <path d="M25,10 L35,10 L37,14 L39,10 L49,10 L42,30 L32,30 L25,10 Z" fill="#2563eb" opacity="0.8"/>
+  <circle cx="60" cy="20" r="10" fill="#10b981"/>
+  <path d="M55,20 L58,23 L65,16" stroke="#ffffff" stroke-width="2" fill="none"/>
+  <text x="80" y="25" font-family="Arial" font-size="14" font-weight="bold" fill="#0f172a">VERIFIED</text>
+</svg>

@@ -30,7 +30,7 @@
     </div>
     <div class="col-md-3">
         <div class="stat-box">
-            <div class="stat-value">${{ total_earnings }}</div>
+            <div class="stat-value">${{ total_returns }}</div>
             <div class="stat-label">Total Earnings</div>
         </div>
     </div>
@@ -148,7 +148,7 @@
                 <a href="{% url 'accounts:wallet' %}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body">
-                {% if transactions %}
+                {% if recent_transactions %}
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -160,7 +160,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for transaction in transactions %}
+                                {% for transaction in recent_transactions %}
                                     <tr>
                                         <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
                                         <td>

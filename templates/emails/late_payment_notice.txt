@@ -1,0 +1,29 @@
+LATE PAYMENT NOTICE
+
+Hello {{ borrower_name }},
+
+This is an important notice regarding your overdue payment for the loan "{{ loan_title }}".
+
+YOUR PAYMENT IS NOW {{ days_overdue }} DAYS OVERDUE.
+
+Payment Details:
+- Payment #: {{ payment_number }} of {{ total_payments }}
+- Original Amount Due: ${{ original_amount }}
+- Late Fee: ${{ late_fee }}
+- Total Amount Due: ${{ amount_due }}
+- Original Due Date: {{ due_date }}
+
+A late fee has been added to your payment. Please make your payment as soon as possible to avoid negative impact on your credit score and possible loan default.
+
+To make your payment, please visit: {{ loan_url }}
+
+If you're experiencing financial difficulties, please contact our customer support team to discuss possible arrangements.
+
+If you've already made this payment after this notice was generated, please disregard this email.
+
+Best Regards,
+The P2P Lending Team
+
+---
+This is an automated message. Please do not reply to this email.
+© 2025 P2P Lending Platform. All rights reserved.

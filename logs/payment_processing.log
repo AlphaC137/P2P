@@ -1,0 +1,4 @@
+2025-05-07 21:58:47,358 [INFO] Starting payment processing at 2025-05-07 21:58:47.358100
+2025-05-07 21:58:47,367 [ERROR] Error processing payments: no such column: lending_loanpayment.reminder_sent
+2025-05-07 22:06:47,379 [INFO] Starting payment processing at 2025-05-07 22:06:47.379647
+2025-05-07 22:06:47,389 [INFO] Payment processing completed successfully.

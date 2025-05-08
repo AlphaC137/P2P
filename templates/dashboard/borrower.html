@@ -43,6 +43,97 @@
     </div>
 </div>
 
+<!-- Verification Status -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card {% if user.profile.borrower_profile.verification_status == 'verified' %}border-success{% elif user.profile.borrower_profile.verification_status == 'pending' %}border-warning{% else %}border-danger{% endif %}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    Verification Status 
+                    {% if user.profile.borrower_profile.verification_status == 'verified' %}
+                        <span class="badge bg-success">Verified</span>
+                    {% elif user.profile.borrower_profile.verification_status == 'pending' %}
+                        <span class="badge bg-warning">Pending Review</span>
+                    {% else %}
+                        <span class="badge bg-danger">Not Verified</span>
+                    {% endif %}
+                </h3>
+                {% if user.profile.borrower_profile.verification_status == 'not_submitted' %}
+                    <a href="{% url 'accounts:verification' %}" class="btn btn-primary">Complete Verification</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if user.profile.borrower_profile.verification_status == 'verified' %}
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> Your account is fully verified! You now have access to higher loan limits and better interest rates.
+                    </div>
+                {% elif user.profile.borrower_profile.verification_status == 'pending' %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-hourglass-split"></i> Your verification documents are being reviewed. This process typically takes 1-2 business days.
+                    </div>
+                {% elif user.profile.borrower_profile.verification_status == 'rejected' %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle-fill"></i> Your verification was rejected. Please review the issues below and resubmit your documents.
+                        <a href="{% url 'accounts:verification' %}" class="btn btn-sm btn-outline-danger mt-2">Re-submit Documents</a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p><i class="bi bi-info-circle-fill"></i> <strong>Why verify your account?</strong></p>
+                        <ul>
+                            <li>Increase your borrowing limits</li>
+                            <li>Reduce interest rates by up to 3%</li>
+                            <li>Faster loan approval process</li>
+                            <li>Build trust with potential investors</li>
+                        </ul>
+                        <a href="{% url 'accounts:verification' %}" class="btn btn-primary mt-2">Verify Your Account</a>
+                    </div>
+                {% endif %}
+                
+                {% if user.profile.borrower_profile.verification_status != 'not_submitted' %}
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>ID Verification:</strong> 
+                            {% if user.profile.borrower_profile.identity_verified %}
+                                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                            {% else %}
+                                <span class="text-muted"><i class="bi bi-x-circle"></i> Pending</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Income Verification:</strong> 
+                            {% if user.profile.borrower_profile.income_verified %}
+                                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                            {% else %}
+                                <span class="text-muted"><i class="bi bi-x-circle"></i> Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <strong>Submitted:</strong> 
+                            {% if user.profile.borrower_profile.verification_submitted_at %}
+                                {{ user.profile.borrower_profile.verification_submitted_at|date:"M d, Y" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Completed:</strong> 
+                            {% if user.profile.borrower_profile.verification_completed_at %}
+                                {{ user.profile.borrower_profile.verification_completed_at|date:"M d, Y" }}
+                            {% else %}
+                                Pending
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Upcoming Payments -->
 <div class="row mb-4">
     <div class="col-md-12">
@@ -163,7 +254,7 @@
                                 <div class="card loan-card h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ loan.title }}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</</h6>
                                         <p class="card-text">{{ loan.description|truncatechars:100 }}</p>
                                         <div class="progress mb-3">
                                             <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">

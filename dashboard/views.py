@@ -21,14 +21,17 @@ def investor_dashboard(request):
     wallet = request.user.wallet
     
     # Get user's investments
-    investments = Investment.objects.filter(investor=request.user).order_by('-created_at')
+    investments = Investment.objects.filter(investor=request.user).order_by('-date_invested')
     
     # Get recent transactions
     recent_transactions = Transaction.objects.filter(wallet=wallet).order_by('-timestamp')[:10]
     
+    # Get active investments (the actual queryset, not just the count)
+    active_investments = investments.filter(loan__status__in=['active', 'funded'])
+    
     # Summary statistics
     total_invested = investments.aggregate(total=Sum('amount'))['total'] or 0
-    active_investments = investments.filter(loan__status__in=['active', 'funded']).count()
+    active_investments_count = active_investments.count()
     
     # Calculate total returns (received repayments)
     total_returns = LoanPayment.objects.filter(
@@ -37,6 +40,14 @@ def investor_dashboard(request):
     ).aggregate(
         total=Sum('amount_due')
     )['total'] or 0
+    
+    # Calculate average interest rate (weighted by investment amount)
+    if total_invested > 0:
+        avg_interest_rate = investments.annotate(
+            weighted_rate=F('amount') * F('loan__interest_rate') / total_invested
+        ).aggregate(avg_rate=Sum('weighted_rate'))['avg_rate'] or 0
+    else:
+        avg_interest_rate = 0
     
     # Calculate expected returns (upcoming repayments)
     expected_returns = LoanPayment.objects.filter(
@@ -61,7 +72,9 @@ def investor_dashboard(request):
         'recent_transactions': recent_transactions,
         'total_invested': total_invested,
         'active_investments': active_investments,
+        'active_investments_count': active_investments_count,
         'total_returns': total_returns,
+        'avg_interest_rate': avg_interest_rate,
         'expected_returns': expected_returns,
         'loan_purposes': loan_purposes,
         'risk_diversification': risk_diversification,
@@ -92,14 +105,19 @@ def borrower_dashboard(request):
     
     # Upcoming payments - find the next pending payment for each active loan
     upcoming_payments = []
-    for loan in loans.filter(status__in=['active', 'funded']):
-        next_payment = LoanPayment.objects.filter(
-            loan=loan,
-            status__in=['pending', 'late']
-        ).order_by('due_date').first()
-        
-        if next_payment:
-            upcoming_payments.append(next_payment)
+    try:
+        for loan in loans.filter(status__in=['active', 'funded']):
+            next_payment = LoanPayment.objects.filter(
+                loan=loan,
+                status__in=['pending', 'late']
+            ).order_by('due_date').first()
+            
+            if next_payment:
+                upcoming_payments.append({'loan': loan, 'payment': next_payment})
+    except Exception as e:
+        # Log the error but continue
+        print(f"Error processing upcoming payments: {e}")
+        messages.warning(request, "There was an issue loading some payment information.")
     
     # Late payments
     late_payments = LoanPayment.objects.filter(
@@ -128,6 +146,14 @@ def borrower_dashboard(request):
         total=Sum('amount_due')
     )['total'] or 0
     
+    # Get user's credit score
+    credit_score = 650  # Default value
+    try:
+        borrower_profile = request.user.profile.borrower_profile
+        credit_score = borrower_profile.credit_score
+    except:
+        pass
+        
     context = {
         'wallet': wallet,
         'loans': loans,
@@ -139,6 +165,7 @@ def borrower_dashboard(request):
         'pending_loans': pending_loans,
         'total_repaid': total_repaid,
         'remaining_debt': remaining_debt,
+        'credit_score': credit_score,
     }
     
     return render(request, 'dashboard/borrower.html', context)

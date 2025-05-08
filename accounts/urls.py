@@ -20,4 +20,9 @@ urlpatterns = [
     path('wallet/', views.wallet_view, name='wallet'),
     path('wallet/deposit/', views.deposit_funds, name='deposit_funds'),
     path('wallet/withdraw/', views.withdraw_funds, name='withdraw_funds'),
+    path('wallet/statistics/', views.wallet_statistics, name='wallet_statistics'),
+    path('wallet/transaction/<int:transaction_id>/', views.transaction_detail, name='transaction_detail'),
+    
+    # Verification
+    path('verification/', views.borrower_verification, name='verification'),
 ]

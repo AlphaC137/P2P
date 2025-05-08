@@ -1,0 +1,296 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Platform Metrics | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+<style>
+    .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .stats-card {
+        flex: 1;
+        min-width: 200px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background-color: white;
+    }
+    .stats-card h3 {
+        margin-top: 0;
+        color: #447e9b;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .stat-value {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #333;
+    }
+    .stat-label {
+        color: #666;
+        font-size: 0.9em;
+    }
+    .trend-up {
+        color: #28a745;
+    }
+    .trend-down {
+        color: #dc3545;
+    }
+    .highlight {
+        background-color: #f8f9fa;
+        padding: 3px 5px;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+    .activity-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .activity-table th {
+        text-align: left;
+        padding: 10px;
+        border-bottom: 2px solid #eee;
+    }
+    .activity-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .section-title {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .verification-queue {
+        background-color: #FFF3CD;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+    }
+    .verification-queue h3 {
+        color: #856404;
+        margin-top: 0;
+    }
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+    .badge-primary { background-color: #007bff; color: white; }
+    .badge-success { background-color: #28a745; color: white; }
+    .badge-warning { background-color: #ffc107; color: #212529; }
+    .badge-danger { background-color: #dc3545; color: white; }
+    .badge-info { background-color: #17a2b8; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ title }}</h1>
+    
+    <!-- User Metrics -->
+    <h2 class="section-title">User Metrics</h2>
+    <div class="stats-container">
+        <div class="stats-card">
+            <h3>Total Users</h3>
+            <div class="stat-value">{{ total_users }}</div>
+            <div class="stat-label">Registered accounts</div>
+        </div>
+        <div class="stats-card">
+            <h3>Investors</h3>
+            <div class="stat-value">{{ investor_count }}</div>
+            <div class="stat-label">{{ investor_count|divisibleby:total_users }}% of total users</div>
+        </div>
+        <div class="stats-card">
+            <h3>Borrowers</h3>
+            <div class="stat-value">{{ borrower_count }}</div>
+            <div class="stat-label">{{ borrower_count|divisibleby:total_users }}% of total users</div>
+        </div>
+        <div class="stats-card">
+            <h3>Verification Rate</h3>
+            <div class="stat-value">{{ verification_rate }}%</div>
+            <div class="stat-label">{{ verified_borrowers }} verified borrowers</div>
+        </div>
+    </div>
+    
+    <!-- Loan Metrics -->
+    <h2 class="section-title">Loan Metrics</h2>
+    <div class="stats-container">
+        <div class="stats-card">
+            <h3>Total Loans</h3>
+            <div class="stat-value">{{ total_loans }}</div>
+            <div class="stat-label">All loan requests</div>
+        </div>
+        <div class="stats-card">
+            <h3>Active Loans</h3>
+            <div class="stat-value">{{ active_loans }}</div>
+            <div class="stat-label">Currently active or funded</div>
+        </div>
+        <div class="stats-card">
+            <h3>Pending Loans</h3>
+            <div class="stat-value">{{ pending_loans }}</div>
+            <div class="stat-label">Awaiting approval/funding</div>
+        </div>
+        <div class="stats-card">
+            <h3>Completed Loans</h3>
+            <div class="stat-value">{{ completed_loans }}</div>
+            <div class="stat-label">Successfully repaid</div>
+        </div>
+        <div class="stats-card">
+            <h3>Cancelled/Defaulted</h3>
+            <div class="stat-value">{{ cancelled_loans }}</div>
+            <div class="stat-label">Problem loans</div>
+        </div>
+    </div>
+    
+    <!-- Financial Metrics -->
+    <h2 class="section-title">Financial Metrics</h2>
+    <div class="stats-container">
+        <div class="stats-card">
+            <h3>Total Loan Volume</h3>
+            <div class="stat-value">${{ total_loan_volume|floatformat:2 }}</div>
+            <div class="stat-label">Value of active/completed loans</div>
+        </div>
+        <div class="stats-card">
+            <h3>Total Investment Volume</h3>
+            <div class="stat-value">${{ total_investment_volume|floatformat:2 }}</div>
+            <div class="stat-label">Total investment amount</div>
+        </div>
+        <div class="stats-card">
+            <h3>Average Loan Amount</h3>
+            <div class="stat-value">${{ avg_loan_amount|floatformat:2 }}</div>
+            <div class="stat-label">Average per loan</div>
+        </div>
+        <div class="stats-card">
+            <h3>Average Interest Rate</h3>
+            <div class="stat-value">{{ avg_interest_rate|floatformat:2 }}%</div>
+            <div class="stat-label">Platform average</div>
+        </div>
+        <div class="stats-card">
+            <h3>System Balance</h3>
+            <div class="stat-value">${{ total_system_balance|floatformat:2 }}</div>
+            <div class="stat-label">Total wallet balances</div>
+        </div>
+    </div>
+    
+    <!-- Payment Metrics -->
+    <h2 class="section-title">Payment Metrics</h2>
+    <div class="stats-container">
+        <div class="stats-card">
+            <h3>Late Payments</h3>
+            <div class="stat-value">{{ late_payments }}</div>
+            <div class="stat-label">Overdue payments</div>
+        </div>
+        <div class="stats-card">
+            <h3>Pending Payments</h3>
+            <div class="stat-value">{{ pending_payments }}</div>
+            <div class="stat-label">Due soon</div>
+        </div>
+    </div>
+    
+    <!-- Verification Queue Alert -->
+    {% if pending_verifications > 0 %}
+    <div class="verification-queue">
+        <h3>Verification Queue: {{ pending_verifications }} pending</h3>
+        <p>There are <strong>{{ pending_verifications }}</strong> borrowers awaiting verification approval.</p>
+        <a href="{% url 'admin:accounts_borrowerprofile_changelist' %}?verification_status__exact=pending" class="button">Review Verifications</a>
+    </div>
+    {% endif %}
+    
+    <!-- Recent Activity -->
+    <h2 class="section-title">Recent Activity</h2>
+    
+    <h3>Recent Loans</h3>
+    <table class="activity-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Borrower</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in recent_loans %}
+            <tr>
+                <td>{{ loan.title }}</td>
+                <td>{{ loan.borrower.username }}</td>
+                <td>${{ loan.amount }}</td>
+                <td>
+                    <span class="badge {% if loan.status == 'active' %}badge-primary{% elif loan.status == 'funded' %}badge-success{% elif loan.status == 'pending' %}badge-warning{% elif loan.status == 'repaid' %}badge-info{% else %}badge-danger{% endif %}">
+                        {{ loan.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ loan.created_at|date:"M d, Y" }}</td>
+                <td><a href="{% url 'admin:lending_loan_change' loan.id %}" class="button">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h3>Recent Investments</h3>
+    <table class="activity-table">
+        <thead>
+            <tr>
+                <th>Investor</th>
+                <th>Loan</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for investment in recent_investments %}
+            <tr>
+                <td>{{ investment.investor.username }}</td>
+                <td>{{ investment.loan.title }}</td>
+                <td>${{ investment.amount }}</td>
+                <td>{{ investment.date_invested|date:"M d, Y" }}</td>
+                <td><a href="{% url 'admin:lending_investment_change' investment.id %}" class="button">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h3>Recent Transactions</h3>
+    <table class="activity-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in recent_transactions %}
+            <tr>
+                <td>{{ transaction.wallet.user.username }}</td>
+                <td>
+                    <span class="badge {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}badge-success{% elif transaction.transaction_type == 'withdrawal' or transaction.transaction_type == 'investment' %}badge-warning{% else %}badge-info{% endif %}">
+                        {{ transaction.get_transaction_type_display }}
+                    </span>
+                </td>
+                <td>${{ transaction.amount }}</td>
+                <td>{{ transaction.timestamp|date:"M d, Y H:i" }}</td>
+                <td><a href="{% url 'admin:accounts_transaction_change' transaction.id %}" class="button">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

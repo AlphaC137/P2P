@@ -10,7 +10,7 @@ django.setup()
 
 # Import models
 from django.contrib.auth.models import User
-from accounts.models import Profile, Wallet, Transaction
+from accounts.models import UserProfile, Wallet, Transaction
 from lending.models import Loan, Investment, LoanPayment
 
 # Create sample users
@@ -29,14 +29,13 @@ def create_sample_users():
                 first_name=f"Investor{i}",
                 last_name="Test"
             )
-            profile = Profile.objects.create(
+            profile = UserProfile.objects.create(
                 user=user,
                 user_type='investor',
                 phone_number=f"555-000-{1000+i}",
                 address=f"{i} Investment St, Moneyville",
                 date_of_birth=datetime.now() - timedelta(days=365*30 + i*100)
             )
-            wallet = Wallet.objects.create(user=user)
             investors.append(user)
             print(f"Created investor: {username}")
         else:
@@ -55,14 +54,13 @@ def create_sample_users():
                 first_name=f"Borrower{i}",
                 last_name="Test"
             )
-            profile = Profile.objects.create(
+            profile = UserProfile.objects.create(
                 user=user,
                 user_type='borrower',
                 phone_number=f"555-111-{1000+i}",
                 address=f"{i} Borrowing Ave, Loantown",
                 date_of_birth=datetime.now() - timedelta(days=365*25 + i*100)
             )
-            wallet = Wallet.objects.create(user=user)
             borrowers.append(user)
             print(f"Created borrower: {username}")
         else:
@@ -84,7 +82,6 @@ def fund_investor_wallets(investors):
                 wallet=wallet,
                 transaction_type='deposit',
                 amount=initial_balance,
-                status='completed',
                 description="Initial funds deposit"
             )
             wallet.balance += initial_balance
@@ -106,7 +103,6 @@ def fund_borrower_wallets(borrowers):
                 wallet=wallet,
                 transaction_type='deposit',
                 amount=initial_balance,
-                status='completed',
                 description="Initial funds deposit"
             )
             wallet.balance += initial_balance
@@ -155,6 +151,18 @@ def create_sample_loans(borrowers):
             interest_rate = decimal.Decimal(random.uniform(5.0, 15.0)).quantize(decimal.Decimal('0.1'))
             purpose = random.choice(loan_purposes)
             
+            # Use a simpler calculation method for monthly payment
+            if interest_rate == 0:
+                monthly_payment = amount / decimal.Decimal(term)
+            else:
+                r = interest_rate / decimal.Decimal('100') / decimal.Decimal('12')  # Monthly interest rate
+                n = decimal.Decimal(term)  # Number of payments
+                monthly_payment = amount * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+            
+            # Round to 2 decimal places
+            monthly_payment = monthly_payment.quantize(decimal.Decimal('0.01'))
+            total_repayment = (monthly_payment * decimal.Decimal(term)).quantize(decimal.Decimal('0.01'))
+            
             loan = Loan.objects.create(
                 borrower=borrower,
                 title=loan_titles[i],
@@ -164,6 +172,8 @@ def create_sample_loans(borrowers):
                 interest_rate=interest_rate,
                 purpose=purpose,
                 risk_score=random.randint(1, 10),
+                monthly_payment=monthly_payment,
+                total_repayment=total_repayment,
                 status='pending' if i < 8 else 'funded'  # Make most loans pending, a few funded
             )
             loans.append(loan)
@@ -214,7 +224,6 @@ def create_sample_investments(investors, loans):
                         wallet=wallet,
                         transaction_type='investment',
                         amount=available_amount,
-                        status='completed',
                         description=f"Investment in loan: {loan.title}"
                     )
                     
@@ -242,18 +251,35 @@ def create_loan_payments(loans):
         
         # Create payment schedule
         monthly_payment = loan.calculate_monthly_payment()
+        remaining_balance = loan.amount
         
         for month in range(1, loan.term_months + 1):
             due_date = datetime.now() + timedelta(days=30 * month)
+            
+            # Calculate interest and principal portions
+            monthly_interest = (loan.interest_rate / decimal.Decimal('100') / decimal.Decimal('12')) * remaining_balance
+            
+            # For the last payment, principal is the remaining balance
+            if month == loan.term_months:
+                principal = remaining_balance
+                interest = monthly_payment - principal
+            else:
+                interest = monthly_interest
+                principal = monthly_payment - interest
             
             payment = LoanPayment.objects.create(
                 loan=loan,
                 payment_number=month,
                 amount_due=monthly_payment,
                 due_date=due_date,
+                principal=principal,
+                interest=interest,
                 status='pending'
             )
-        
+            
+            # Update the remaining balance for the next payment
+            remaining_balance -= principal
+            
         print(f"Created payment schedule for loan: {loan.title} - ${monthly_payment}/month for {loan.term_months} months")
 
 # Main function to run all initialization

@@ -6,133 +6,132 @@
     <title>{% block title %}P2P Lending Platform{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <style>
-        body {
-            padding-top: 4.5rem;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .navbar-brand {
-            font-weight: bold;
-        }
-        
-        .navbar-nav .nav-link.active {
-            font-weight: bold;
-        }
-        
-        footer {
-            margin-top: auto;
-            padding: 1.5rem 0;
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .stat-box {
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-            height: 100%;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-        
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.875rem;
-        }
-        
-        .loan-card {
-            transition: transform 0.2s ease;
-            border: 1px solid rgba(0,0,0,.125);
-        }
-        
-        .loan-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-        
-        .dashboard-stats .col-md-3 {
-            margin-bottom: 1rem;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/styles.css">
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">P2P Lending</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-handshake text-primary me-2"></i>
+                <span>P2P Lending</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if 'marketplace' in request.path %}active{% endif %}" href="{% url 'lending:marketplace' %}">Marketplace</a>
+                        <a class="nav-link" href="{% url 'lending:marketplace' %}">
+                            <i class="fas fa-store me-1"></i> Marketplace
+                        </a>
                     </li>
                     {% if user.is_authenticated %}
-                        {% if user.profile.user_type == 'investor' %}
+                        {% if user.profile.user_type == 'borrower' %}
                             <li class="nav-item">
-                                <a class="nav-link {% if 'investor' in request.path %}active{% endif %}" href="{% url 'dashboard:investor' %}">Dashboard</a>
-                            </li>
-                        {% elif user.profile.user_type == 'borrower' %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if 'borrower' in request.path %}active{% endif %}" href="{% url 'dashboard:borrower' %}">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if 'create_loan' in request.path %}active{% endif %}" href="{% url 'lending:create_loan' %}">Request Loan</a>
+                                <a class="nav-link" href="{% url 'lending:create_loan' %}">
+                                    <i class="fas fa-plus-circle me-1"></i> Create Loan
+                                </a>
                             </li>
                         {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lending:portfolio_analysis' %}">
+                                <i class="fas fa-chart-pie me-1"></i> Portfolio
+                            </a>
+                        </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">
+                            <i class="fas fa-info-circle me-1"></i> About
+                        </a>
+                    </li>
                 </ul>
                 
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if 'wallet' in request.path %}active{% endif %}" href="{% url 'accounts:wallet' %}">
-                                <i class="bi bi-wallet2"></i> ${{ user.wallet.balance|floatformat:2 }}
+                            <a class="nav-link" href="{% url 'accounts:wallet' %}">
+                                <i class="fas fa-wallet me-1"></i> Wallet
+                                <span class="badge bg-success ms-1">${{ user.profile.available_balance|floatformat:2 }}</span>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>
+                                {{ user.username }}
+                                {% if user.profile.user_type == 'investor' %}
+                                    <span class="badge bg-primary ms-1">Investor</span>
+                                {% elif user.profile.user_type == 'borrower' %}
+                                    <span class="badge bg-info ms-1">Borrower</span>
+                                {% endif %}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:wallet' %}">Wallet</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdownUser">
+                                <li>
+                                    {% if user.profile.user_type == 'investor' %}
+                                        <a class="dropdown-item" href="{% url 'dashboard:investor' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                        </a>
+                                    {% elif user.profile.user_type == 'borrower' %}
+                                        <a class="dropdown-item" href="{% url 'dashboard:borrower' %}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                        </a>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:deposit_funds' %}">
+                                        <i class="fas fa-money-bill-wave me-2"></i> Deposit Funds
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:withdraw_funds' %}">
+                                        <i class="fas fa-money-bill-wave me-2"></i> Withdraw Funds
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link {% if 'login' in request.path %}active{% endif %}" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'accounts:login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i> Login
+                            </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Register
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRegister" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-plus me-1"></i> Register
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accounts:register_investor' %}">As Investor</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:register_borrower' %}">As Borrower</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="navbarDropdownRegister">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:register_investor' %}">
+                                        <i class="fas fa-chart-line me-2"></i> As Investor
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:register_borrower' %}">
+                                        <i class="fas fa-hand-holding-usd me-2"></i> As Borrower
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     {% endif %}
@@ -140,61 +139,106 @@
             </div>
         </div>
     </nav>
-    
-    <!-- Main Content -->
-    <main class="container my-4">
+
+    <!-- Alerts -->
+    <div class="container mt-3">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'info' %}fa-info-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle{% endif %} me-2"></i>
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
-        
-        {% block content %}
-        <!-- Page content will be inserted here -->
-        {% endblock %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
     </main>
-    
+
     <!-- Footer -->
-    <footer class="py-4">
+    <footer class="bg-dark text-white mt-5 py-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>P2P Lending Platform</h5>
-                    <p class="text-muted">Connecting borrowers and investors directly.</p>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5 class="footer-title">P2P Lending Platform</h5>
+                    <p class="mb-3">Connecting investors and borrowers directly through a secure and transparent peer-to-peer lending marketplace.</p>
+                    <div class="d-flex mb-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h5>Links</h5>
+                <div class="col-md-2 mb-4 mb-md-0">
+                    <h5 class="footer-title">Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
-                        <li><a href="{% url 'lending:marketplace' %}" class="text-decoration-none">Marketplace</a></li>
-                        <li><a href="#" class="text-decoration-none">About Us</a></li>
-                        <li><a href="#" class="text-decoration-none">Contact</a></li>
+                        <li><a href="{% url 'home' %}" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Home</a></li>
+                        <li><a href="{% url 'lending:marketplace' %}" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Marketplace</a></li>
+                        <li><a href="#about" class="footer-link"><i class="fas fa-chevron-right me-1"></i> About Us</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> FAQ</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Contact</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Contact</h5>
-                    <address class="text-muted">
-                        123 Financial Street<br>
-                        New York, NY 10001<br>
-                        Email: info@p2plending.com<br>
-                        Phone: (123) 456-7890
-                    </address>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 class="footer-title">For Investors</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'accounts:register_investor' %}" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Become an Investor</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> How to Invest</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Investment Risks</a></li>
+                        <li><a href="{% url 'lending:portfolio_analysis' %}" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Portfolio Analysis</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="footer-title">For Borrowers</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'accounts:register_borrower' %}" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Become a Borrower</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Loan Application</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Repayment Process</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Loan Terms</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-chevron-right me-1"></i> Success Stories</a></li>
+                    </ul>
                 </div>
             </div>
-            <hr>
-            <div class="text-center">
-                <p class="mb-0">&copy; {% now "Y" %} P2P Lending Platform. All rights reserved.</p>
-                <p class="text-muted small">This is a simulation platform. No real money is involved.</p>
+            <hr class="mt-4 mb-4 bg-secondary">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-md-0">© 2025 P2P Lending Platform. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">
+                        <a href="#" class="text-white me-3">Privacy Policy</a>
+                        <a href="#" class="text-white me-3">Terms of Service</a>
+                        <a href="#" class="text-white">Legal</a>
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Bootstrap JS with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="/static/js/main.js"></script>
     
-    {% block extra_js %}{% endblock %}
+    <script>
+        // Activate the current nav link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            navLinks.forEach(link => {
+                if(link.getAttribute('href') === currentPath) {
+                    link.classList.add('active', 'fw-bold');
+                }
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
 </body>
 </html>

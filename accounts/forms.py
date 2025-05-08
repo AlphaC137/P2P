@@ -235,3 +235,71 @@ class BorrowerProfileForm(forms.Form):
         if age < 18:
             raise forms.ValidationError('You must be at least 18 years old to register')
         return dob
+
+class BorrowerVerificationForm(forms.ModelForm):
+    """Form for borrower verification document upload"""
+    id_document = forms.FileField(
+        required=True,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        help_text='Upload a government-issued ID (passport, driver\'s license, etc.)'
+    )
+    income_proof = forms.FileField(
+        required=True,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        help_text='Upload proof of income (pay stub, tax return, etc.)'
+    )
+    employer_name = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    job_title = forms.CharField(
+        max_length=100, 
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    employment_duration_years = forms.IntegerField(
+        required=True,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+        help_text='How many years have you been with your current employer?'
+    )
+    
+    class Meta:
+        model = BorrowerProfile
+        fields = ['id_document', 'income_proof', 'employer_name', 'job_title', 'employment_duration_years']
+    
+    def clean_id_document(self):
+        id_document = self.cleaned_data.get('id_document')
+        if id_document:
+            # Check file extension
+            ext = id_document.name.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'pdf']:
+                raise forms.ValidationError('Only JPG, PNG, or PDF files are allowed for ID documents')
+            # Check file size (max 5 MB)
+            if id_document.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('File size cannot exceed 5 MB')
+        return id_document
+    
+    def clean_income_proof(self):
+        income_proof = self.cleaned_data.get('income_proof')
+        if income_proof:
+            # Check file extension
+            ext = income_proof.name.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'pdf']:
+                raise forms.ValidationError('Only JPG, PNG, or PDF files are allowed for income proof')
+            # Check file size (max 5 MB)
+            if income_proof.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('File size cannot exceed 5 MB')
+        return income_proof
+    
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        
+        # Update verification status
+        profile.verification_status = 'pending'
+        profile.verification_submitted_at = datetime.datetime.now()
+        
+        if commit:
+            profile.save()
+        
+        return profile

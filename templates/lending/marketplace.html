@@ -3,72 +3,445 @@
 {% block title %}Loan Marketplace - P2P Lending{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h1>Loan Marketplace</h1>
-        <p class="lead">Browse and invest in available loan opportunities</p>
-    </div>
-</div>
-
-<div class="row">
-    {% if loans %}
-        {% for loan in loans %}
-            <div class="col-md-4 mb-4">
-                <div class="card loan-card h-100">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ loan.title }}</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</h6>
-                        <p class="card-text">{{ loan.description|truncatechars:150 }}</p>
-                        
-                        <div class="progress mb-3">
-                            <div class="progress-bar" role="progressbar" style="width: {{ loan.funding_percentage }}%;" aria-valuenow="{{ loan.funding_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ loan.funding_percentage|floatformat:0 }}%
-                            </div>
+<!-- Marketplace Header -->
+<section class="bg-light py-5 mb-5 position-relative overflow-hidden">
+    <div class="container position-relative z-3">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="badge bg-primary-soft text-primary rounded-pill px-3 py-2 mb-2">Find Opportunities</span>
+                <h1 class="fw-bold mb-3">Loan Marketplace</h1>
+                <p class="lead mb-4">Browse and invest in available loan opportunities from verified borrowers. Start building your diversified P2P portfolio today.</p>
+                
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <div class="d-flex align-items-center bg-white rounded-3 p-2 pe-3 shadow-sm">
+                        <div class="bg-primary-soft rounded-circle p-2 me-2">
+                            <i class="fas fa-percentage text-primary"></i>
                         </div>
-                        
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Term: {{ loan.term_months }} months</span>
-                            <span>Risk Score: {{ loan.risk_score }}</span>
+                        <div>
+                            <p class="small text-muted mb-0">Avg. Returns</p>
+                            <p class="fw-bold mb-0">9.2%</p>
                         </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <span class="badge bg-primary">Monthly: ${{ loan.monthly_payment }}</span>
-                                <span class="text-muted small d-block mt-1">Total Returns: ${{ loan.total_repayment }}</span>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-info">Interest: ${{ loan.total_interest }}</span>
-                                <span class="text-muted small d-block mt-1">Created: {{ loan.created_at|date:"M d, Y" }}</span>
-                            </div>
+                    </div>
+                    <div class="d-flex align-items-center bg-white rounded-3 p-2 pe-3 shadow-sm">
+                        <div class="bg-success-soft rounded-circle p-2 me-2">
+                            <i class="fas fa-check-circle text-success"></i>
                         </div>
-                        
-                        <div class="mt-3">
-                            <a href="{% url 'lending:loan_detail' loan.id %}" class="btn btn-primary">View Details</a>
-                            {% if user.is_authenticated and user.profile.user_type == 'investor' %}
-                                <a href="{% url 'lending:invest' loan.id %}" class="btn btn-outline-success">Invest Now</a>
-                            {% elif user.is_authenticated and user.profile.user_type == 'borrower' %}
-                                {% if loan.borrower == user %}
-                                    <span class="badge bg-secondary">Your Loan</span>
-                                {% endif %}
-                            {% else %}
-                                <a href="{% url 'accounts:register_investor' %}" class="btn btn-outline-primary">Register to Invest</a>
-                            {% endif %}
+                        <div>
+                            <p class="small text-muted mb-0">Success Rate</p>
+                            <p class="fw-bold mb-0">97%</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center bg-white rounded-3 p-2 pe-3 shadow-sm">
+                        <div class="bg-warning-soft rounded-circle p-2 me-2">
+                            <i class="fas fa-bolt text-warning"></i>
+                        </div>
+                        <div>
+                            <p class="small text-muted mb-0">Fast Funding</p>
+                            <p class="fw-bold mb-0">24-48 hrs</p>
                         </div>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-md-12">
-            <div class="alert alert-info text-center">
-                <p class="mb-0">There are no available loans at the moment.</p>
-                {% if user.is_authenticated and user.profile.user_type == 'borrower' %}
-                    <p class="mt-3 mb-0">
-                        <a href="{% url 'lending:create_loan' %}" class="btn btn-primary">Create Loan Request</a>
-                    </p>
-                {% endif %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0"><i class="fas fa-filter me-2 text-primary"></i>Filter Loans</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="loan-filter-form" method="get">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="min_amount" class="form-label small">Min Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                        <input type="number" class="form-control" id="min_amount" name="min_amount" value="{{ min_amount }}" placeholder="Min">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="max_amount" class="form-label small">Max Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                        <input type="number" class="form-control" id="max_amount" name="max_amount" value="{{ max_amount }}" placeholder="Max">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="min_rate" class="form-label small">Min Interest Rate (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                        <input type="number" step="0.1" class="form-control" id="min_rate" name="min_rate" value="{{ min_rate }}" placeholder="Min">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="max_rate" class="form-label small">Max Interest Rate (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                        <input type="number" step="0.1" class="form-control" id="max_rate" name="max_rate" value="{{ max_rate }}" placeholder="Max">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="term" class="form-label small">Loan Term</label>
+                                    <select class="form-select" id="term" name="term">
+                                        <option value="">Any Term</option>
+                                        <option value="short" {% if term == 'short' %}selected{% endif %}>Short Term (≤ 12 months)</option>
+                                        <option value="medium" {% if term == 'medium' %}selected{% endif %}>Medium Term (13-36 months)</option>
+                                        <option value="long" {% if term == 'long' %}selected{% endif %}>Long Term (> 36 months)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="risk" class="form-label small">Risk Level</label>
+                                    <select class="form-select" id="risk" name="risk">
+                                        <option value="">Any Risk Level</option>
+                                        <option value="low" {% if risk == 'low' %}selected{% endif %}>Low Risk (1-3)</option>
+                                        <option value="medium" {% if risk == 'medium' %}selected{% endif %}>Medium Risk (4-7)</option>
+                                        <option value="high" {% if risk == 'high' %}selected{% endif %}>High Risk (8-10)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" id="q" name="q" value="{{ query }}" placeholder="Search by title, description or purpose">
+                                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    {% endif %}
+    </div>
+    
+    <!-- Background shapes -->
+    <div class="position-absolute top-0 end-0 d-none d-lg-block z-1" style="opacity: 0.05;">
+        <img src="/static/img/hero/shapes.svg" alt="" width="400">
+    </div>
+</section>
+
+<div class="container">
+    <!-- Loan Listings -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Available Loans</h2>
+            {% if user.is_authenticated and user.profile.user_type == 'borrower' %}
+                <a href="{% url 'lending:create_loan' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-plus-circle me-1"></i> Create Loan
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            {% if loans %}
+                {% for loan in loans %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card loan-card h-100 border-0 shadow-sm hover-lift">
+                            <div class="position-relative">
+                                {% if loan.purpose == 'business' %}
+                                    <img src="/static/img/loans/business-loan.jpg" class="card-img-top" alt="Business Loan">
+                                    <span class="badge bg-primary position-absolute top-0 end-0 m-3">Business</span>
+                                {% elif loan.purpose == 'education' %}
+                                    <img src="/static/img/loans/education-loan.jpg" class="card-img-top" alt="Education Loan">
+                                    <span class="badge bg-success position-absolute top-0 end-0 m-3">Education</span>
+                                {% elif loan.purpose == 'home_improvement' %}
+                                    <img src="/static/img/loans/solar-loan.jpg" class="card-img-top" alt="Home Improvement">
+                                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">Home Improvement</span>
+                                {% elif loan.purpose == 'debt_consolidation' %}
+                                    <img src="/static/img/loans/debt-loan.jpg" class="card-img-top" alt="Debt Consolidation">
+                                    <span class="badge bg-info position-absolute top-0 end-0 m-3">Debt Consolidation</span>
+                                {% elif loan.purpose == 'auto' %}
+                                    <img src="/static/img/loans/auto-loan.jpg" class="card-img-top" alt="Auto Loan">
+                                    <span class="badge bg-secondary position-absolute top-0 end-0 m-3">Auto</span>
+                                {% elif loan.purpose == 'medical' %}
+                                    <img src="/static/img/loans/medical-loan.jpg" class="card-img-top" alt="Medical Loan">
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-3">Medical</span>
+                                {% else %}
+                                    <img src="/static/img/loans/other-loan.jpg" class="card-img-top" alt="Loan">
+                                    <span class="badge bg-dark position-absolute top-0 end-0 m-3">{{ loan.purpose|title }}</span>
+                                {% endif %}
+                                
+                                {% if loan.is_secured %}
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-3" data-bs-toggle="tooltip" title="This loan is backed by collateral">
+                                        <i class="fas fa-shield-alt me-1"></i> Secured
+                                    </span>
+                                {% endif %}
+                                
+                                {% if loan.borrower_verified %}
+                                    <span class="badge bg-white text-success shadow-sm position-absolute bottom-0 start-0 m-3" data-bs-toggle="tooltip" title="Borrower's identity and income verified">
+                                        <i class="fas fa-user-check me-1"></i> Verified Borrower
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0">{{ loan.title }}</h5>
+                                    <span class="loan-interest rounded-pill bg-success-soft text-success px-2 py-1">{{ loan.interest_rate }}%</span>
+                                </div>
+                                
+                                <p class="card-text text-muted">{{ loan.description|truncatechars:100 }}</p>
+                                
+                                <div class="loan-stats d-flex gap-3 mb-3">
+                                    <div class="loan-stat">
+                                        <span class="d-block text-muted small">Amount</span>
+                                        <span class="fw-bold">${{ loan.amount }}</span>
+                                    </div>
+                                    <div class="loan-stat">
+                                        <span class="d-block text-muted small">Term</span>
+                                        <span class="fw-bold">{{ loan.term_months }} months</span>
+                                    </div>
+                                    <div class="loan-stat">
+                                        <span class="d-block text-muted small">Risk</span>
+                                        <span class="fw-bold 
+                                            {% if loan.risk_score <= 3 %}text-success{% elif loan.risk_score <= 7 %}text-warning{% else %}text-danger{% endif %}">
+                                            {% if loan.risk_score <= 3 %}Low ({{ loan.risk_score }}){% elif loan.risk_score <= 7 %}Medium ({{ loan.risk_score }}){% else %}High ({{ loan.risk_score }}){% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Funding Progress:</span>
+                                    <span class="fw-bold small">{{ loan.funding_percentage|floatformat:0 }}%</span>
+                                </div>
+                                
+                                <div class="progress mb-3" style="height: 8px;">
+                                    <div class="progress-bar {% if loan.funding_percentage >= 80 %}bg-success{% elif loan.funding_percentage >= 40 %}bg-primary{% else %}bg-info{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ loan.funding_percentage }}%;" 
+                                         aria-valuenow="{{ loan.funding_percentage }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center small text-muted">
+                                    <span><i class="far fa-calendar-alt me-1"></i> Listed {{ loan.created_at|date:"M d, Y" }}</span>
+                                    <span><i class="far fa-clock me-1"></i> {{ loan.funding_days_left }} days left</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer bg-white border-top-0 p-4 pt-0">
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'lending:loan_detail' loan.id %}" class="btn btn-outline-primary flex-grow-1">
+                                        <i class="fas fa-info-circle me-1"></i> Details
+                                    </a>
+                                    {% if user.is_authenticated and user.profile.user_type == 'investor' %}
+                                        <a href="{% url 'lending:invest' loan.id %}" class="btn btn-primary flex-grow-1">
+                                            <i class="fas fa-hand-holding-usd me-1"></i> Invest
+                                        </a>
+                                    {% elif user.is_authenticated and user.profile.user_type == 'borrower' %}
+                                        {% if loan.borrower == user %}
+                                            <span class="badge bg-secondary d-flex align-items-center justify-content-center flex-grow-1 p-2">
+                                                <i class="fas fa-user-circle me-1"></i> Your Loan
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'accounts:register_investor' %}" class="btn btn-success flex-grow-1">
+                                            <i class="fas fa-user-plus me-1"></i> Register to Invest
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12">
+                    <div class="alert alert-info text-center py-5">
+                        <i class="fas fa-info-circle fa-3x mb-3"></i>
+                        <p class="mb-3">There are no available loans at the moment.</p>
+                        {% if user.is_authenticated and user.profile.user_type == 'borrower' %}
+                            <p class="mb-0">
+                                <a href="{% url 'lending:create_loan' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-1"></i> Create Loan Request
+                                </a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Loan Calculator -->
+    <section class="mb-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                        <h4 class="card-title"><i class="fas fa-calculator text-primary me-2"></i>Loan Calculator</h4>
+                        <p class="text-muted mb-0">Estimate your monthly payments and total interest for any loan scenario before investing.</p>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="row" id="loan-calculator">
+                            <div class="col-md-8">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="calc-amount" class="form-label">Loan Amount</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                            <input type="number" class="form-control" id="calc-amount" value="10000" min="100" max="100000">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="calc-term" class="form-label">Term (months)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                            <input type="number" class="form-control" id="calc-term" value="36" min="1" max="120">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="calc-interest" class="form-label">Interest Rate (%)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                                            <input type="number" class="form-control" id="calc-interest" value="8.5" min="1" max="30" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-3 mt-md-0">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body p-3">
+                                        <div class="row">
+                                            <div class="col-4 border-end">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-1 small">Monthly</h6>
+                                                    <h4 class="mb-0 text-primary" id="calc-monthly-payment">$0.00</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 border-end">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-1 small">Interest</h6>
+                                                    <h4 class="mb-0 text-danger" id="calc-total-interest">$0.00</h4>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-center">
+                                                    <h6 class="text-muted mb-1 small">Total</h6>
+                                                    <h4 class="mb-0 text-success" id="calc-total-payment">$0.00</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Investment Tips -->
+    <section class="mb-5">
+        <div class="card bg-light border-0">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <h4><i class="fas fa-lightbulb text-warning me-2"></i>Investment Tips</h4>
+                        <p class="mb-0">Maximize your returns and minimize risk with these strategies:</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="bg-white rounded shadow-sm p-3 h-100">
+                                    <h6 class="text-primary">Diversify</h6>
+                                    <p class="small mb-0">Spread your investments across multiple loans with different risk profiles</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white rounded shadow-sm p-3 h-100">
+                                    <h6 class="text-primary">Reinvest</h6>
+                                    <p class="small mb-0">Automatically reinvest repayments to maximize compound returns</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-white rounded shadow-sm p-3 h-100">
+                                    <h6 class="text-primary">Start Small</h6>
+                                    <p class="small mb-0">Begin with smaller investments as you learn the platform</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        
+        // Loan calculator
+        const calcAmount = document.getElementById('calc-amount');
+        const calcTerm = document.getElementById('calc-term');
+        const calcInterest = document.getElementById('calc-interest');
+        const calcMonthlyPayment = document.getElementById('calc-monthly-payment');
+        const calcTotalInterest = document.getElementById('calc-total-interest');
+        const calcTotalPayment = document.getElementById('calc-total-payment');
+        
+        function calculateLoan() {
+            const principal = parseFloat(calcAmount.value);
+            const interestRate = parseFloat(calcInterest.value) / 100 / 12;
+            const numberOfPayments = parseFloat(calcTerm.value);
+            
+            // Monthly payment formula: P * r * (1 + r)^n / ((1 + r)^n - 1)
+            const x = Math.pow(1 + interestRate, numberOfPayments);
+            const monthlyPayment = (principal * x * interestRate) / (x - 1);
+            
+            if (isFinite(monthlyPayment)) {
+                calcMonthlyPayment.innerText = '$' + monthlyPayment.toFixed(2);
+                calcTotalPayment.innerText = '$' + (monthlyPayment * numberOfPayments).toFixed(2);
+                calcTotalInterest.innerText = '$' + ((monthlyPayment * numberOfPayments) - principal).toFixed(2);
+            } else {
+                calcMonthlyPayment.innerText = '$0.00';
+                calcTotalPayment.innerText = '$0.00';
+                calcTotalInterest.innerText = '$0.00';
+            }
+        }
+        
+        calcAmount.addEventListener('input', calculateLoan);
+        calcTerm.addEventListener('input', calculateLoan);
+        calcInterest.addEventListener('input', calculateLoan);
+        
+        // Initial calculation
+        calculateLoan();
+    });
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Additional styles for the marketplace page */
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .bg-primary-soft { background-color: rgba(37, 99, 235, 0.1); }
+    .bg-success-soft { background-color: rgba(16, 185, 129, 0.1); }
+    .bg-warning-soft { background-color: rgba(245, 158, 11, 0.1); }
+    .bg-info-soft { background-color: rgba(6, 182, 212, 0.1); }
+    .bg-danger-soft { background-color: rgba(239, 68, 68, 0.1); }
+    
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+    
+    .loan-stat {
+        flex: 1;
+    }
+    
+    .z-1 { z-index: 1; }
+    .z-3 { z-index: 3; }
+</style>
 {% endblock %}

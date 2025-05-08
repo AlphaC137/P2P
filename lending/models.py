@@ -16,6 +16,19 @@ class Loan(models.Model):
         ('cancelled', 'Cancelled'),
     )
     
+    LOAN_PURPOSE_CHOICES = (
+        ('personal', 'Personal'),
+        ('business', 'Business'),
+        ('education', 'Education'),
+        ('debt_consolidation', 'Debt Consolidation'),
+        ('home_improvement', 'Home Improvement'),
+        ('medical', 'Medical'),
+        ('car', 'Car Purchase'),
+        ('vacation', 'Vacation'),
+        ('wedding', 'Wedding'),
+        ('other', 'Other'),
+    )
+    
     borrower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='loans')
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -26,10 +39,33 @@ class Loan(models.Model):
     total_repayment = models.DecimalField(max_digits=12, decimal_places=2)
     risk_score = models.IntegerField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    purpose = models.TextField(blank=True)
+    
+    # Enhanced loan details
+    purpose = models.CharField(max_length=20, choices=LOAN_PURPOSE_CHOICES, default='other')
+    purpose_description = models.TextField(blank=True)
+    debt_to_income_ratio = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    
+    # Verification and risk factors
+    borrower_verified = models.BooleanField(default=False)
+    employment_verified = models.BooleanField(default=False)
+    income_verified = models.BooleanField(default=False)
+    previous_loans_count = models.IntegerField(default=0)
+    previous_loans_repaid = models.IntegerField(default=0)
+    
+    # Collateral information (for secured loans)
+    is_secured = models.BooleanField(default=False)
+    collateral_description = models.TextField(blank=True)
+    collateral_value = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    loan_to_value_ratio = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    
+    # Loan performance metrics
+    days_late_count = models.IntegerField(default=0)
+    times_late_count = models.IntegerField(default=0)
     
     @property
     def current_funded_amount(self):
@@ -48,18 +84,48 @@ class Loan(models.Model):
     def total_interest(self):
         """Calculate total interest to be paid"""
         return self.total_repayment - self.amount
-    
+        
     @property
     def remaining_balance(self):
         """Calculate remaining balance on loan"""
-        if self.status not in ['active', 'funded']:
+        # If loan is not active or funded, return full amount
+        if self.status not in ['active', 'funded', 'repaid']:
             return self.amount
+            
+        # Calculate based on payments made
+        paid_amount = LoanPayment.objects.filter(
+            loan=self, status='paid'
+        ).aggregate(total_principal=models.Sum('principal'))['total_principal'] or Decimal('0.00')
         
-        paid_principal = LoanPayment.objects.filter(
-            loan=self, status='paid').aggregate(
-            total=models.Sum('principal'))['total'] or Decimal('0.00')
+        return self.amount - paid_amount
         
-        return self.amount - paid_principal
+    @property
+    def repayment_progress(self):
+        """Calculate repayment progress as a percentage"""
+        if self.amount <= 0:
+            return 0
+        return 100 - ((self.remaining_balance / self.amount) * 100)
+        
+    @property
+    def is_late(self):
+        """Check if loan has any late payments"""
+        return LoanPayment.objects.filter(loan=self, status='late').exists()
+        
+    @property
+    def on_time_payment_percentage(self):
+        """Calculate percentage of payments made on time"""
+        total_payments = LoanPayment.objects.filter(
+            loan=self, status__in=['paid', 'late']
+        ).count()
+        
+        if total_payments == 0:
+            return 100
+            
+        on_time_payments = LoanPayment.objects.filter(
+            loan=self, status='paid'
+        ).exclude(payment_date__gt=F('due_date')).count()
+        
+        return (on_time_payments / total_payments) * 100
     
     def calculate_monthly_payment(self):
         """Calculate monthly payment amount using amortization formula"""
@@ -162,11 +228,178 @@ class LoanPayment(models.Model):
     payment_date = models.DateField(null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     
+    # Automated repayment fields
+    reminder_sent = models.BooleanField(default=False)
+    reminder_sent_date = models.DateTimeField(null=True, blank=True)
+    late_notice_sent = models.BooleanField(default=False)
+    late_notice_sent_date = models.DateTimeField(null=True, blank=True)
+    late_fee_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    auto_payment_enabled = models.BooleanField(default=False)
+    
     class Meta:
         unique_together = ('loan', 'payment_number')
     
     def __str__(self):
         return f"Payment #{self.payment_number} for {self.loan.title} - ${self.amount_due}"
+    
+    def is_due_soon(self):
+        """Check if payment is due within 3 days"""
+        if self.status != 'pending':
+            return False
+        return 0 <= (self.due_date - timezone.now().date()).days <= 3
+    
+    def is_overdue(self):
+        """Check if payment is overdue"""
+        if self.status != 'pending':
+            return False
+        return self.due_date < timezone.now().date()
+    
+    def days_overdue(self):
+        """Calculate days overdue"""
+        if not self.is_overdue():
+            return 0
+        return (timezone.now().date() - self.due_date).days
+    
+    def mark_as_late(self):
+        """Mark payment as late and apply late fee"""
+        if self.status == 'pending' and self.is_overdue():
+            self.status = 'late'
+            
+            # Apply late fee (5% of payment amount)
+            late_fee_rate = Decimal('0.05')
+            self.late_fee_amount = self.amount_due * late_fee_rate
+            
+            # Update amount due with late fee
+            self.amount_due += self.late_fee_amount
+            
+            # Update loan's late payment metrics
+            self.loan.times_late_count += 1
+            self.loan.days_late_count += self.days_overdue()
+            self.loan.save()
+            
+            self.save()
+            return True
+        return False
+
+class PortfolioAnalysis(models.Model):
+    """Model for storing investor portfolio analysis metrics"""
+    investor = models.OneToOneField(User, on_delete=models.CASCADE, related_name='portfolio_analysis')
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    # Performance metrics
+    total_invested = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    total_earnings = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    expected_earnings = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    annual_return_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    
+    # Risk metrics
+    avg_loan_risk_score = models.DecimalField(max_digits=4, decimal_places=2, default=Decimal('0.00'))
+    risk_adjusted_return = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    
+    # Diversification metrics
+    loan_count = models.IntegerField(default=0)
+    loans_at_risk_count = models.IntegerField(default=0)
+    avg_investment_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    largest_investment_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    
+    # Purpose diversification (stored as JSON)
+    purpose_distribution = models.JSONField(default=dict)
+    risk_distribution = models.JSONField(default=dict)
+    term_distribution = models.JSONField(default=dict)
+    
+    def __str__(self):
+        return f"{self.investor.username}'s Portfolio Analysis"
+    
+    def calculate_metrics(self):
+        """Calculate all portfolio metrics"""
+        from django.db.models import Avg, Count, Max, Sum, F, ExpressionWrapper, DecimalField, Value, Q
+        from django.db.models.functions import Cast
+        from django.utils import timezone
+        
+        # Get all active investments
+        investments = Investment.objects.filter(
+            investor=self.investor,
+            loan__status__in=['pending', 'funded', 'active']
+        )
+        
+        # Performance metrics
+        self.total_invested = investments.aggregate(sum=Sum('amount'))['sum'] or Decimal('0.00')
+        
+        # Calculate earnings (both realized and expected)
+        paid_payments = LoanPayment.objects.filter(
+            loan__investments__investor=self.investor,
+            status='paid'
+        )
+        
+        pending_payments = LoanPayment.objects.filter(
+            loan__investments__investor=self.investor,
+            status__in=['pending', 'late']
+        )
+        
+        self.total_earnings = paid_payments.aggregate(sum=Sum('interest'))['sum'] or Decimal('0.00')
+        self.expected_earnings = pending_payments.aggregate(sum=Sum('interest'))['sum'] or Decimal('0.00')
+        
+        # Calculate annual return rate
+        if self.total_invested > 0:
+            # Simple annualized return calculation
+            first_investment_date = Investment.objects.filter(
+                investor=self.investor
+            ).order_by('date_invested').first()
+            
+            if first_investment_date:
+                days_invested = (timezone.now() - first_investment_date.date_invested).days
+                if days_invested > 0:
+                    annualized_return = (self.total_earnings / self.total_invested) * (365 / days_invested) * 100
+                    self.annual_return_rate = min(annualized_return, Decimal('100.00'))  # Cap at 100% for display purposes
+        
+        # Risk metrics
+        self.avg_loan_risk_score = investments.aggregate(
+            avg=Avg('loan__risk_score'))['avg'] or Decimal('0.00')
+        
+        # Risk-adjusted return (simple Sharpe-like ratio)
+        if self.avg_loan_risk_score > 0:
+            # Convert avg_loan_risk_score to Decimal to avoid TypeError in division
+            self.risk_adjusted_return = self.annual_return_rate / Decimal(str(self.avg_loan_risk_score))
+        
+        # Diversification metrics
+        self.loan_count = investments.count()
+        self.loans_at_risk_count = investments.filter(loan__risk_score__gt=7).count()
+        
+        if self.loan_count > 0:
+            self.avg_investment_amount = self.total_invested / self.loan_count
+            
+            # Find largest investment percentage
+            largest_investment = investments.order_by('-amount').first()
+            if largest_investment:
+                self.largest_investment_percentage = (largest_investment.amount / self.total_invested) * 100
+        
+        # Calculate purpose distribution
+        purpose_dist = {}
+        for purpose, name in Loan.LOAN_PURPOSE_CHOICES:
+            amount = investments.filter(loan__purpose=purpose).aggregate(
+                sum=Sum('amount'))['sum'] or Decimal('0.00')
+            if amount > 0:
+                purpose_dist[name] = float(amount)
+        self.purpose_distribution = purpose_dist
+        
+        # Calculate risk distribution
+        risk_dist = {
+            'Low Risk (1-3)': float(investments.filter(loan__risk_score__lte=3).aggregate(sum=Sum('amount'))['sum'] or 0),
+            'Medium Risk (4-7)': float(investments.filter(loan__risk_score__gt=3, loan__risk_score__lte=7).aggregate(sum=Sum('amount'))['sum'] or 0),
+            'High Risk (8-10)': float(investments.filter(loan__risk_score__gt=7).aggregate(sum=Sum('amount'))['sum'] or 0)
+        }
+        self.risk_distribution = risk_dist
+        
+        # Calculate term distribution
+        term_dist = {
+            'Short Term (≤12 mo)': float(investments.filter(loan__term_months__lte=12).aggregate(sum=Sum('amount'))['sum'] or 0),
+            'Medium Term (13-36 mo)': float(investments.filter(loan__term_months__gt=12, loan__term_months__lte=36).aggregate(sum=Sum('amount'))['sum'] or 0),
+            'Long Term (>36 mo)': float(investments.filter(loan__term_months__gt=36).aggregate(sum=Sum('amount'))['sum'] or 0)
+        }
+        self.term_distribution = term_dist
+        
+        self.save()
+        return self
 
 # Function to create a loan request
 def create_loan_request(borrower, title, description, amount, term_months, purpose=''):

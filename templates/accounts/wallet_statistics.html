@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Wallet Statistics - P2P Lending{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'accounts:wallet' %}">Wallet</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Wallet Statistics</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Wallet Statistics</h1>
+        <p class="lead">Detailed insights about your financial activities</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-primary">${{ wallet.balance }}</h3>
+                <p class="text-muted">Current Balance</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-success">${{ deposit_sum }}</h3>
+                <p class="text-muted">Total Deposits</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-danger">${{ withdrawal_sum }}</h3>
+                <p class="text-muted">Total Withdrawals</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="text-info">{{ transaction_count }}</h3>
+                <p class="text-muted">Total Transactions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cash Flow Chart -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Monthly Cash Flow</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="cashFlowChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Categories -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Transaction Types</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="transactionTypesChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Recent Activity</h3>
+            </div>
+            <div class="card-body">
+                {% if recent_transactions %}
+                <div class="list-group">
+                    {% for transaction in recent_transactions %}
+                    <a href="{% url 'accounts:transaction_detail' transaction.id %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}
+                                <span class="text-success">+${{ transaction.amount }}</span>
+                                {% else %}
+                                <span class="text-danger">-${{ transaction.amount }}</span>
+                                {% endif %}
+                            </h5>
+                            <small>{{ transaction.timestamp|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-1">{{ transaction.description }}</p>
+                        <small>
+                            <span class="badge {% if transaction.transaction_type == 'deposit' or transaction.transaction_type == 'return' %}bg-success{% elif transaction.transaction_type == 'withdrawal' or transaction.transaction_type == 'investment' %}bg-warning{% else %}bg-info{% endif %}">
+                                {{ transaction.get_transaction_type_display }}
+                            </span>
+                        </small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center">No recent transactions.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Investment Statistics (for investors only) -->
+{% if user.profile.user_type == 'investor' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Investment Statistics</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-primary">${{ user.profile.investor_profile.total_invested }}</h3>
+                                <p class="text-muted">Total Invested</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-success">${{ user.profile.investor_profile.total_earnings }}</h3>
+                                <p class="text-muted">Total Earnings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-info">{{ roi }}%</h3>
+                                <p class="text-muted">Return on Investment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="{% url 'lending:portfolio_analysis' %}" class="btn btn-primary">View Detailed Portfolio Analysis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cash Flow Chart
+        const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+        new Chart(cashFlowCtx, {
+            type: 'line',
+            data: {
+                labels: {{ months|safe }},
+                datasets: [
+                    {
+                        label: 'Money In',
+                        data: {{ money_in|safe }},
+                        backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Money Out',
+                        data: {{ money_out|safe }},
+                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Transaction Types Chart
+        const transactionTypesCtx = document.getElementById('transactionTypesChart').getContext('2d');
+        new Chart(transactionTypesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ transaction_types|safe }},
+                datasets: [{
+                    data: {{ transaction_amounts|safe }},
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.7)',
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(0, 123, 255, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(23, 162, 184, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

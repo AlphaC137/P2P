@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Portfolio Analysis - P2P Lending{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Portfolio Analysis</h1>
+            <div>
+                <a href="{% url 'lending:portfolio_analysis' %}?refresh=1" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh Analysis
+                </a>
+                <a href="{% url 'lending:my_investments' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-list"></i> My Investments
+                </a>
+            </div>
+        </div>
+        <p class="text-muted">Last updated: {{ portfolio.last_updated|date:"M d, Y H:i" }}</p>
+    </div>
+</div>
+
+<!-- Performance Summary -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Invested</h5>
+                <h2 class="card-text text-primary">${{ portfolio.total_invested }}</h2>
+                <p class="text-muted">Across {{ portfolio.loan_count }} loans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Earnings</h5>
+                <h2 class="card-text text-success">${{ portfolio.total_earnings }}</h2>
+                <p class="text-muted">Expected: ${{ portfolio.expected_earnings }} more</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Annual Return</h5>
+                <h2 class="card-text {% if portfolio.annual_return_rate >= 10 %}text-success{% elif portfolio.annual_return_rate >= 5 %}text-primary{% else %}text-danger{% endif %}">
+                    {{ portfolio.annual_return_rate|floatformat:2 }}%
+                </h2>
+                <p class="text-muted">Risk-adjusted: {{ portfolio.risk_adjusted_return|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Average Risk Score</h5>
+                <h2 class="card-text {% if portfolio.avg_loan_risk_score <= 3 %}text-success{% elif portfolio.avg_loan_risk_score <= 7 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ portfolio.avg_loan_risk_score|floatformat:1 }}/10
+                </h2>
+                <p class="text-muted">{{ portfolio.loans_at_risk_count }} high-risk loans</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Portfolio Diversification -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="mb-0">Portfolio Diversification</h3>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="diversificationTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="purpose-tab" data-bs-toggle="tab" data-bs-target="#purpose" type="button" role="tab" aria-controls="purpose" aria-selected="true">Purpose</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="risk-tab" data-bs-toggle="tab" data-bs-target="#risk" type="button" role="tab" aria-controls="risk" aria-selected="false">Risk</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="term-tab" data-bs-toggle="tab" data-bs-target="#term" type="button" role="tab" aria-controls="term" aria-selected="false">Term</button>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" id="diversificationTabContent">
+                    <div class="tab-pane fade show active" id="purpose" role="tabpanel" aria-labelledby="purpose-tab">
+                        <canvas id="purposeChart" height="250"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="risk" role="tabpanel" aria-labelledby="risk-tab">
+                        <canvas id="riskChart" height="250"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="term" role="tabpanel" aria-labelledby="term-tab">
+                        <canvas id="termChart" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h5>Diversification Score</h5>
+                    <div class="progress mb-3">
+                        {% with diversification_score=portfolio.largest_investment_percentage %}
+                        <div class="progress-bar {% if diversification_score < 20 %}bg-success{% elif diversification_score < 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" 
+                             style="width: {% widthratio diversification_score 100 100 %}%;" 
+                             aria-valuenow="{{ diversification_score }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{ diversification_score|floatformat:0 }}%
+                        </div>
+                        {% endwith %}
+                    </div>
+                    <p class="text-muted small">
+                        Your largest investment makes up {{ portfolio.largest_investment_percentage|floatformat:1 }}% of your portfolio. 
+                        {% if portfolio.largest_investment_percentage > 50 %}
+                            <span class="text-danger">This indicates high concentration risk.</span>
+                        {% elif portfolio.largest_investment_percentage > 20 %}
+                            <span class="text-warning">For better diversification, consider spreading your investments across more loans.</span>
+                        {% else %}
+                            <span class="text-success">Good diversification! Your portfolio risk is well-distributed.</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Monthly Returns -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h3 class="mb-0">Monthly Returns</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="returnsChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Returns -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Recent Returns</h3>
+            </div>
+            <div class="card-body">
+                {% if recent_payments %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Loan</th>
+                                    <th>Payment #</th>
+                                    <th>Principal</th>
+                                    <th>Interest</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in recent_payments %}
+                                    <tr>
+                                        <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                                        <td>{{ payment.loan.title }}</td>
+                                        <td>{{ payment.payment_number }} of {{ payment.loan.term_months }}</td>
+                                        <td>${{ payment.principal }}</td>
+                                        <td>${{ payment.interest }}</td>
+                                        <td>${{ payment.amount_due }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center my-3">You haven't received any returns yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommended Investments -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Recommended Investments</h3>
+                <a href="{% url 'lending:marketplace' %}" class="btn btn-sm btn-outline-primary">View All Loans</a>
+            </div>
+            <div class="card-body">
+                {% if recommendations %}
+                    <div class="row">
+                        {% for loan in recommendations %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card loan-card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ loan.title }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">${{ loan.amount }} at {{ loan.interest_rate }}%</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="badge bg-info">{{ loan.get_purpose_display }}</span>
+                                            <span class="badge {% if loan.risk_score <= 3 %}bg-success{% elif loan.risk_score <= 7 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                Risk: {{ loan.risk_score }}/10
+                                            </span>
+                                        </div>
+                                        <p class="card-text">{{ loan.description|truncatechars:100 }}</p>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: {% widthratio loan.funding_percentage 1 1 %}%;" 
+                                                 aria-valuenow="{{ loan.funding_percentage }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                {{ loan.funding_percentage|floatformat:0 }}%
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-muted">Term: {{ loan.term_months }} months</span>
+                                            {% if loan.borrower_verified %}
+                                                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="mt-3">
+                                            <a href="{% url 'lending:loan_detail' loan.id %}" class="btn btn-sm btn-primary">View Details</a>
+                                            <a href="{% url 'lending:invest' loan.id %}" class="btn btn-sm btn-outline-success">Invest</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center my-3">No loan recommendations available at this time.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Purpose Distribution Chart
+    const purposeCtx = document.getElementById('purposeChart').getContext('2d');
+    const purposeChart = new Chart(purposeCtx, {
+        type: 'pie',
+        data: {
+            labels: JSON.parse('{{ purpose_labels|safe|escapejs }}'),
+            datasets: [{
+                data: JSON.parse('{{ purpose_data|safe|escapejs }}'),
+                backgroundColor: [
+                    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                    '#6f42c1', '#fd7e14', '#20c9a6', '#858796', '#5a5c69'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+    
+    // Risk Distribution Chart
+    const riskCtx = document.getElementById('riskChart').getContext('2d');
+    const riskChart = new Chart(riskCtx, {
+        type: 'pie',
+        data: {
+            labels: JSON.parse('{{ risk_labels|safe|escapejs }}'),
+            datasets: [{
+                data: JSON.parse('{{ risk_data|safe|escapejs }}'),
+                backgroundColor: [
+                    '#1cc88a', '#f6c23e', '#e74a3b'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+    
+    // Term Distribution Chart
+    const termCtx = document.getElementById('termChart').getContext('2d');
+    const termChart = new Chart(termCtx, {
+        type: 'pie',
+        data: {
+            labels: JSON.parse('{{ term_labels|safe|escapejs }}'),
+            datasets: [{
+                data: JSON.parse('{{ term_data|safe|escapejs }}'),
+                backgroundColor: [
+                    '#4e73df', '#1cc88a', '#36b9cc'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+    
+    // Monthly Returns Chart
+    const returnsCtx = document.getElementById('returnsChart').getContext('2d');
+    const returnsChart = new Chart(returnsCtx, {
+        type: 'bar',
+        data: {
+            labels: JSON.parse('{{ monthly_returns_labels|safe|escapejs }}'),
+            datasets: [{
+                label: 'Monthly Returns ($)',
+                data: JSON.parse('{{ monthly_returns_data|safe|escapejs }}'),
+                backgroundColor: '#1cc88a',
+                borderColor: '#1cc88a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

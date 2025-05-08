@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#eef2ff" />
+  
+  <!-- Office Building -->
+  <rect x="250" y="100" width="300" height="250" fill="#2563eb" />
+  <rect x="270" y="120" width="60" height="50" fill="#bfdbfe" />
+  <rect x="350" y="120" width="60" height="50" fill="#bfdbfe" />
+  <rect x="430" y="120" width="60" height="50" fill="#bfdbfe" />
+  <rect x="270" y="190" width="60" height="50" fill="#bfdbfe" />
+  <rect x="350" y="190" width="60" height="50" fill="#bfdbfe" />
+  <rect x="430" y="190" width="60" height="50" fill="#bfdbfe" />
+  <rect x="270" y="260" width="60" height="50" fill="#bfdbfe" />
+  <rect x="350" y="260" width="60" height="50" fill="#bfdbfe" />
+  <rect x="430" y="260" width="60" height="50" fill="#bfdbfe" />
+  <rect x="370" y="310" width="60" height="40" fill="#1e40af" />
+  
+  <!-- Money/Business Icons -->
+  <circle cx="150" cy="150" r="70" fill="#10b981" opacity="0.7" />
+  <text x="150" y="170" font-family="Arial" font-size="70" font-weight="bold" text-anchor="middle" fill="white">$</text>
+  
+  <!-- Graph -->
+  <g transform="translate(600, 200)">
+    <rect x="0" y="0" width="120" height="100" rx="10" fill="white" stroke="#cbd5e1" stroke-width="2"/>
+    <polyline points="10,90 40,60 70,70 100,30" stroke="#2563eb" stroke-width="3" fill="none"/>
+    <circle cx="40" cy="60" r="5" fill="#2563eb"/>
+    <circle cx="70" cy="70" r="5" fill="#2563eb"/>
+    <circle cx="100" cy="30" r="5" fill="#2563eb"/>
+  </g>
+</svg>
