@@ -354,7 +354,9 @@ class PortfolioAnalysis(models.Model):
             if first_investment_date:
                 days_invested = (timezone.now() - first_investment_date.date_invested).days
                 if days_invested > 0:
-                    annualized_return = (self.total_earnings / self.total_invested) * (365 / days_invested) * 100
+                    # Convert numeric literals to Decimal to avoid TypeError
+                    days_invested_decimal = Decimal(str(days_invested))
+                    annualized_return = (self.total_earnings / self.total_invested) * (Decimal('365') / days_invested_decimal) * Decimal('100')
                     self.annual_return_rate = min(annualized_return, Decimal('100.00'))  # Cap at 100% for display purposes
         
         # Risk metrics
