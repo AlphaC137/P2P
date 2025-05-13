@@ -1,0 +1,29 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f8f9fa"/>
+  
+  <!-- Portrait Background -->
+  <rect width="400" height="400" fill="#e9ecef"/>
+  
+  <!-- Head -->
+  <circle cx="200" cy="160" r="100" fill="#adb5bd"/>
+  
+  <!-- Hair -->
+  <path d="M130,120 Q200,80 270,120 L270,160 Q200,180 130,160 Z" fill="#6c757d"/>
+  
+  <!-- Body/Suit -->
+  <path d="M120,280 L200,220 L280,280 L300,400 L100,400 Z" fill="#20c997"/>
+  
+  <!-- Necklace -->
+  <path d="M180,250 C180,250 200,280 220,250" fill="none" stroke="#ffc107" stroke-width="3"/>
+  <circle cx="200" cy="270" r="5" fill="#ffc107"/>
+  
+  <!-- Face Features (simplified) -->
+  <ellipse cx="170" cy="140" rx="10" ry="15" fill="#343a40"/>
+  <ellipse cx="230" cy="140" rx="10" ry="15" fill="#343a40"/>
+  <path d="M170,180 Q200,200 230,180" fill="none" stroke="#343a40" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Name Tag -->
+  <rect x="100" y="320" width="200" height="40" fill="#ffffff" rx="5" ry="5"/>
+  <text x="200" y="345" font-family="Arial" font-size="16" font-weight="bold" fill="#212529" text-anchor="middle">CFO</text>
+</svg>

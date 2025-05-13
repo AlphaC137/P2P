@@ -1,0 +1,32 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Car Silhouette -->
+  <g transform="translate(200, 200) scale(2)">
+    <!-- Car Body -->
+    <path d="M30,70 L30,110 L170,110 L170,70 C170,70 150,30 120,30 L80,30 C50,30 30,70 30,70 Z" fill="#007bff" stroke="#212529" stroke-width="2"/>
+    
+    <!-- Windows -->
+    <path d="M50,70 L80,40 L120,40 L150,70 Z" fill="#e9ecef" stroke="#212529" stroke-width="1"/>
+    
+    <!-- Wheels -->
+    <circle cx="60" cy="110" r="20" fill="#343a40" stroke="#212529" stroke-width="2"/>
+    <circle cx="60" cy="110" r="10" fill="#6c757d" stroke="#212529" stroke-width="1"/>
+    
+    <circle cx="140" cy="110" r="20" fill="#343a40" stroke="#212529" stroke-width="2"/>
+    <circle cx="140" cy="110" r="10" fill="#6c757d" stroke="#212529" stroke-width="1"/>
+    
+    <!-- Headlight -->
+    <rect x="30" y="70" width="10" height="10" fill="#ffc107" stroke="#212529" stroke-width="1"/>
+    
+    <!-- Taillight -->
+    <rect x="160" y="70" width="10" height="10" fill="#dc3545" stroke="#212529" stroke-width="1"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="100" font-family="Arial" font-size="36" font-weight="bold" fill="#495057" text-anchor="middle">Auto Loan</text>
+  
+  <!-- Caption -->
+  <text x="400" y="500" font-family="Arial" font-size="24" fill="#6c757d" text-anchor="middle">Finance your dream vehicle with competitive rates</text>
+</svg>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}Create Loan Request - P2P Lending{% endblock %}
 
@@ -42,6 +43,14 @@
                         </div>
                     </div>
 
+                    <div class="calculator-visual mb-4">
+                        <img src="{% static 'images/loan-calculator.svg' %}" alt="Loan Calculator" class="img-fluid">
+                    </div>
+
+                    <div class="calculation-results alert alert-success" style="display:none;">
+                        <h5>Projected Monthly Payment: <span id="monthlyPayment">$0</span></h5>
+                    </div>
+
                     <div class="alert alert-info">
                         <h5>How it works:</h5>
                         <p>After submission, your loan request will be processed with our risk assessment model to determine interest rates. Once approved, it will be listed on the marketplace for investors to fund.</p>
@@ -56,4 +65,41 @@
         </div>
     </div>
 </div>
+
+<style>
+    .calculator-visual {
+        background: #f8f9fa;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .calculation-results {
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('id_amount');
+        const termInput = document.getElementById('id_term_months');
+        const monthlyPaymentSpan = document.getElementById('monthlyPayment');
+        const resultsDiv = document.querySelector('.calculation-results');
+
+        function updateCalculation() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const term = parseFloat(termInput.value) || 1;
+            // Simplified calculation (replace with actual formula)
+            const monthly = amount / term;
+            monthlyPaymentSpan.textContent = `$${monthly.toFixed(2)}`;
+            resultsDiv.style.display = 'block';
+        }
+
+        amountInput.addEventListener('input', updateCalculation);
+        termInput.addEventListener('input', updateCalculation);
+    });
+</script>
 {% endblock %}

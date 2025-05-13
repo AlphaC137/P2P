@@ -1,0 +1,28 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f8f9fa"/>
+  
+  <!-- Portrait Background -->
+  <rect width="400" height="400" fill="#e9ecef"/>
+  
+  <!-- Head -->
+  <circle cx="200" cy="160" r="100" fill="#adb5bd"/>
+  
+  <!-- Body/Suit -->
+  <path d="M120,280 L200,220 L280,280 L300,400 L100,400 Z" fill="#343a40"/>
+  
+  <!-- Shirt Collar -->
+  <path d="M180,250 L200,280 L220,250 L200,220 Z" fill="#f8f9fa"/>
+  
+  <!-- Tie -->
+  <path d="M200,250 L190,280 L200,350 L210,280 Z" fill="#007bff"/>
+  
+  <!-- Face Features (simplified) -->
+  <ellipse cx="170" cy="140" rx="10" ry="15" fill="#343a40"/>
+  <ellipse cx="230" cy="140" rx="10" ry="15" fill="#343a40"/>
+  <path d="M180,180 Q200,200 220,180" fill="none" stroke="#343a40" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Name Tag -->
+  <rect x="100" y="320" width="200" height="40" fill="#ffffff" rx="5" ry="5"/>
+  <text x="200" y="345" font-family="Arial" font-size="16" font-weight="bold" fill="#212529" text-anchor="middle">CEO</text>
+</svg>

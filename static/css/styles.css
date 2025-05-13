@@ -4,20 +4,32 @@
  */
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary: #0f172a;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --info: #06b6d4;
-  --light-bg: #f8fafc;
-  --gray-100: #f1f5f9;
-  --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
-  --gray-500: #64748b;
-  --gray-700: #334155;
-  --gray-900: #0f172a;
+  --primary: #0033A0;  /* Standard Bank Blue */
+  --primary-dark: #00287A;  /* Darker version for hover states */
+  --primary-light: #335CB5;  /* Lighter version for gradients */
+  --primary-ultra-light: #E6EBF5;  /* Ultra light for backgrounds */
+  --secondary: #002266;
+  --secondary-light: #334C80;  /* Lighter version for gradients */
+  --accent: #FFB81C;  /* Gold accent color for highlights */
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --danger: #EF4444;
+  --danger-light: #FEE2E2;
+  --warning: #F59E0B;
+  --warning-light: #FEF3C7;
+  --info: #3B82F6;
+  --info-light: #DBEAFE;
+  --light: #F3F4F6;
+  --dark: #1F2937;
+  --gray-100: #F9FAFB;
+  --gray-200: #F3F4F6;
+  --gray-300: #E5E7EB;
+  --gray-400: #D1D5DB;
+  --gray-500: #9CA3AF;
+  --gray-600: #6B7280;
+  --gray-700: #4B5563;
+  --gray-800: #374151;
+  --gray-900: #1F2937;
   --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --border-radius: 0.5rem;
 }
@@ -27,7 +39,56 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   color: var(--gray-700);
   line-height: 1.6;
-  background-color: var(--light-bg);
+  background-color: var(--gray-100);
+  overflow-x: hidden;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: 2.5rem 0 3.5rem;
+  margin-bottom: -2rem;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+}
+
+.dashboard-header h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-header .lead {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
 }
 
 a {
@@ -47,10 +108,10 @@ a:hover {
 .text-info { color: var(--info) !important; }
 
 /* Soft background colors */
-.bg-primary-soft { background-color: rgba(37, 99, 235, 0.1) !important; }
+.bg-primary-soft { background-color: rgba(0, 51, 160, 0.1) !important; }
 .bg-success-soft { background-color: rgba(16, 185, 129, 0.1) !important; }
 .bg-warning-soft { background-color: rgba(245, 158, 11, 0.1) !important; }
-.bg-info-soft { background-color: rgba(6, 182, 212, 0.1) !important; }
+.bg-info-soft { background-color: rgba(0, 102, 204, 0.1) !important; }
 
 /* Buttons */
 .btn {
@@ -94,7 +155,7 @@ a:hover {
 
 .form-control:focus, .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 51, 160, 0.25);
 }
 
 .form-label {
@@ -122,7 +183,7 @@ a:hover {
 .navbar-light .navbar-nav .nav-link:hover, 
 .navbar-light .navbar-nav .nav-link.active {
   color: var(--primary);
-  background-color: rgba(37, 99, 235, 0.05);
+  background-color: rgba(0, 51, 160, 0.05);
 }
 
 .dropdown-menu {
@@ -138,7 +199,7 @@ a:hover {
 }
 
 .dropdown-item:hover, .dropdown-item:focus {
-  background-color: rgba(37, 99, 235, 0.05);
+  background-color: rgba(0, 51, 160, 0.05);
   color: var(--primary);
 }
 
@@ -146,25 +207,47 @@ a:hover {
 .card {
   border: none;
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: none;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .card-header {
-  background-color: white;
-  border-bottom: 1px solid var(--gray-200);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-bottom: none;
+  padding: 1.25rem;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  position: relative;
+}
+
+.card-header h3 {
+  margin: 0;
   font-weight: 600;
-  padding: 1rem 1.5rem;
+  font-size: 1.25rem;
+}
+
+.card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--primary-light) 100%);
 }
 
 .card-body {
-  padding: 1.5rem;
+  padding: 1.75rem;
+  background-color: white;
 }
 
 .card-footer {
@@ -175,7 +258,7 @@ a:hover {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, var(--primary), #4338ca);
+  background: linear-gradient(135deg, var(--primary), #001F5C);
   color: white;
   padding: 6rem 0;
   position: relative;
@@ -216,7 +299,7 @@ a:hover {
 .feature-icon {
   width: 60px;
   height: 60px;
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(0, 51, 160, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -267,9 +350,46 @@ a:hover {
 }
 
 .progress {
-  height: 0.5rem;
+  height: 0.75rem;
   border-radius: 1rem;
   margin: 1.5rem 0;
+  background-color: var(--primary-ultra-light);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+  position: relative;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: width 0.6s ease;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+  opacity: 0.3;
 }
 
 .loan-card-progress-text {
@@ -391,7 +511,7 @@ a:hover {
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(37, 99, 235, 0.03);
+  background-color: rgba(0, 51, 160, 0.03);
 }
 
 /* Pagination */
@@ -408,7 +528,7 @@ a:hover {
 }
 
 .page-link:hover {
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: rgba(0, 51, 160, 0.1);
   color: var(--primary);
 }
 
@@ -577,4 +697,109 @@ footer {
 @keyframes rotation {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Loan Card Enhancements */
+.loan-card {
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 51, 160, 0.08);
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, white 0%, var(--primary-ultra-light) 100%);
+}
+
+.loan-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--primary-ultra-light) 0%, transparent 70%);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.loan-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0, 51, 160, 0.1), 0 10px 10px -5px rgba(0, 51, 160, 0.04);
+}
+
+.loan-card .card-body {
+  padding: 1.75rem;
+  z-index: 1;
+  position: relative;
+}
+
+.loan-card .card-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-dark);
+}
+
+.loan-card .card-subtitle {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.loan-card .card-text {
+  color: var(--gray-700);
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.loan-card .btn {
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.loan-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 51, 160, 0.1);
+}
+
+.funding-progress {
+  height: 0.75rem;
+}
+
+/* Calculator Price Display Fix */
+.calculator-card .text-center h4 {
+  font-size: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  margin-bottom: 0;
+  min-width: 80px;
+}
+
+.calculator-card .text-center h6 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.calculator-card .col-4 {
+  padding: 0.75rem 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculator-card .row {
+  margin: 0;
+}
+
+.calculator-card .card-body {
+  padding: 0.5rem 0;
 }

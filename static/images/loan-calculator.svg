@@ -1,0 +1,51 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#f8f9fa" rx="15" ry="15"/>
+  
+  <!-- Calculator Body -->
+  <rect x="100" y="50" width="400" height="300" fill="#ffffff" stroke="#007bff" stroke-width="2" rx="10" ry="10"/>
+  
+  <!-- Calculator Display -->
+  <rect x="120" y="70" width="360" height="60" fill="#e9ecef" rx="5" ry="5"/>
+  <text x="460" y="110" font-family="Arial" font-size="24" fill="#212529" text-anchor="end">$1,250.00</text>
+  
+  <!-- Calculator Buttons -->
+  <g>
+    <!-- Row 1 -->
+    <rect x="120" y="150" width="80" height="40" fill="#6c757d" rx="5" ry="5"/>
+    <text x="160" y="175" font-family="Arial" font-size="16" fill="#ffffff" text-anchor="middle">Amount</text>
+    
+    <rect x="210" y="150" width="80" height="40" fill="#6c757d" rx="5" ry="5"/>
+    <text x="250" y="175" font-family="Arial" font-size="16" fill="#ffffff" text-anchor="middle">Term</text>
+    
+    <rect x="300" y="150" width="80" height="40" fill="#6c757d" rx="5" ry="5"/>
+    <text x="340" y="175" font-family="Arial" font-size="16" fill="#ffffff" text-anchor="middle">Rate</text>
+    
+    <rect x="390" y="150" width="90" height="40" fill="#28a745" rx="5" ry="5"/>
+    <text x="435" y="175" font-family="Arial" font-size="16" fill="#ffffff" text-anchor="middle">Calculate</text>
+    
+    <!-- Row 2 -->
+    <rect x="120" y="200" width="170" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="205" y="225" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">Monthly Payment</text>
+    
+    <rect x="300" y="200" width="180" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="390" y="225" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">$208.33</text>
+    
+    <!-- Row 3 -->
+    <rect x="120" y="250" width="170" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="205" y="275" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">Total Interest</text>
+    
+    <rect x="300" y="250" width="180" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="390" y="275" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">$250.00</text>
+    
+    <!-- Row 4 -->
+    <rect x="120" y="300" width="170" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="205" y="325" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">Total Payment</text>
+    
+    <rect x="300" y="300" width="180" height="40" fill="#e9ecef" rx="5" ry="5"/>
+    <text x="390" y="325" font-family="Arial" font-size="16" fill="#495057" text-anchor="middle">$2,500.00</text>
+  </g>
+  
+  <!-- Title -->
+  <text x="300" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="#007bff" text-anchor="middle">Loan Calculator</text>
+</svg>

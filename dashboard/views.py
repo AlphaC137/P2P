@@ -127,7 +127,8 @@ def borrower_dashboard(request):
     
     # Summary statistics
     total_borrowed = loans.aggregate(total=Sum('amount'))['total'] or 0
-    active_loans = loans.filter(status__in=['active', 'funded']).count()
+    active_loans_count = loans.filter(status__in=['active', 'funded']).count()
+    active_loans = loans.filter(status__in=['active', 'funded'])
     pending_loans = loans.filter(status='pending').count()
     
     # Calculate total repaid
@@ -162,6 +163,7 @@ def borrower_dashboard(request):
         'late_payments': late_payments,
         'total_borrowed': total_borrowed,
         'active_loans': active_loans,
+        'active_loans_count': active_loans_count,
         'pending_loans': pending_loans,
         'total_repaid': total_repaid,
         'remaining_debt': remaining_debt,

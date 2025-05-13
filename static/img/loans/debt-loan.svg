@@ -1,0 +1,29 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Visual Elements -->
+  <rect x="100" y="150" width="600" height="300" fill="#ffffff" stroke="#6c757d" stroke-width="2" rx="10"/>
+  
+  <!-- Dollar Sign -->
+  <text x="400" y="300" font-family="Arial" font-size="120" fill="#28a745" text-anchor="middle">$</text>
+  
+  <!-- Documents -->
+  <rect x="250" y="200" width="120" height="160" fill="#e9ecef" stroke="#6c757d" stroke-width="1" rx="5"/>
+  <line x1="270" y1="230" x2="350" y2="230" stroke="#6c757d" stroke-width="2"/>
+  <line x1="270" y1="260" x2="350" y2="260" stroke="#6c757d" stroke-width="2"/>
+  <line x1="270" y1="290" x2="350" y2="290" stroke="#6c757d" stroke-width="2"/>
+  <line x1="270" y1="320" x2="350" y2="320" stroke="#6c757d" stroke-width="2"/>
+  
+  <rect x="430" y="200" width="120" height="160" fill="#e9ecef" stroke="#6c757d" stroke-width="1" rx="5"/>
+  <line x1="450" y1="230" x2="530" y2="230" stroke="#6c757d" stroke-width="2"/>
+  <line x1="450" y1="260" x2="530" y2="260" stroke="#6c757d" stroke-width="2"/>
+  <line x1="450" y1="290" x2="530" y2="290" stroke="#6c757d" stroke-width="2"/>
+  <line x1="450" y1="320" x2="530" y2="320" stroke="#6c757d" stroke-width="2"/>
+  
+  <!-- Title -->
+  <text x="400" y="100" font-family="Arial" font-size="36" font-weight="bold" fill="#495057" text-anchor="middle">Debt Consolidation Loan</text>
+  
+  <!-- Caption -->
+  <text x="400" y="500" font-family="Arial" font-size="24" fill="#6c757d" text-anchor="middle">Simplify your finances by consolidating multiple debts</text>
+</svg>

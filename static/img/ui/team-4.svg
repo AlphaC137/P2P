@@ -1,0 +1,28 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f8f9fa"/>
+  
+  <!-- Portrait Background -->
+  <rect width="400" height="400" fill="#e9ecef"/>
+  
+  <!-- Head -->
+  <circle cx="200" cy="160" r="100" fill="#adb5bd"/>
+  
+  <!-- Hair -->
+  <path d="M120,130 C120,90 280,90 280,130 L280,160 L120,160 Z" fill="#343a40"/>
+  
+  <!-- Body/Suit -->
+  <path d="M120,280 L200,220 L280,280 L300,400 L100,400 Z" fill="#6f42c1"/>
+  
+  <!-- Shirt Collar -->
+  <path d="M180,250 L200,280 L220,250 L200,220 Z" fill="#f8f9fa"/>
+  
+  <!-- Face Features (simplified) -->
+  <ellipse cx="170" cy="150" rx="10" ry="15" fill="#343a40"/>
+  <ellipse cx="230" cy="150" rx="10" ry="15" fill="#343a40"/>
+  <path d="M180,190 Q200,210 220,190" fill="none" stroke="#343a40" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Name Tag -->
+  <rect x="100" y="320" width="200" height="40" fill="#ffffff" rx="5" ry="5"/>
+  <text x="200" y="345" font-family="Arial" font-size="16" font-weight="bold" fill="#212529" text-anchor="middle">COO</text>
+</svg>

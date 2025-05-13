@@ -1,0 +1,18 @@
+from PIL import Image
+import os
+
+image_path = "/mnt/data/3fe4664c-2c25-4db9-98ad-1a3095d3daaf.png"
+image = Image.open(image_path)
+
+if image.mode in ("P", "RGBA"):
+    image = image.convert("RGB")
+
+svg_content = f'''<svg width="{image.width}" height="{image.height}" xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <image href="data:image/png;base64,{image_path}" width="{image.width}" height="{image.height}"/>
+</svg>'''
+
+svg_path = "/mnt/data/loan_calculator_embedded.svg"
+with open(svg_path, "w") as f:
+    f.write(svg_content)
+
+svg_path
